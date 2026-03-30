@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>EmyCoder</title>
+        <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <div id="header">
+            <h3 class="subtitle">Model Version{{model_version}}</h3>
+            <h1 style="color: white;">EmyCoder</h1>
+            <h3 class="subtitle">@Lungu Emanuel-Leonard</h3>
+        </div>
+        <div id="main">
+            <div id="left">
+                <h1>Input</h1>
+                <textarea id="input-code"></textarea>
+                <span style="height: 16px;"></span>
+                <button id="predict-btn" type="button">Predict</button>
+            </div>
+            <span class="divider" style="width: 16px;"></span>
+            <div id="right">
+                <h1>Output</h1>
+                <h1 id="language">Lang</h1>
+            </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        const predictButton = document.getElementById('predict-btn');
+        const inputArea = document.getElementById("input-code");
+        const lang = document.getElementById("language");
+
+        predictButton.addEventListener('click', async () => {
+            const url = 'http://localhost/predict';
+            const data = { text: inputArea.value };
+
+            lang.style.color = 'red';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const prediction = JSON.stringify(result['language'])
+                lang.innerHTML = '.' + prediction.slice(1, -1)
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong.');
+                alert(inputArea.value);
+            }
+
+            lang.style.color = 'darkslategrey';
+        });
+
+
+        inputArea.addEventListener('keydown', function(e) {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+
+                this.value = this.value.substring(0, start) +
+                    "\t" + this.value.substring(end);
+                this.selectionStart =
+                    this.selectionEnd = start + 1;
+            }
+        });
+    </script>
+</html>
