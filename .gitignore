@@ -1,5 +1,6 @@
 .env
 venv
 **/*.pkl
+**/*.joblib
 **/*.parquet
 **/*.csv

@@ -8,16 +8,33 @@
     </head>
     <body>
         <div id="header">
-            <h3 class="subtitle">Model Version{{model_version}}</h3>
+            <h3 class="subtitle">Model Version {{model_version}}</h3>
             <h1 style="color: white;">EmyCoder</h1>
-            <h3 class="subtitle">@Lungu Emanuel-Leonard</h3>
+            <a class="subtitle" href="https://github.com/EmyLungu" target="_blank" rel="noopener noreferrer">
+                @Lungu Emanuel-Leonard
+            </a>
         </div>
         <div id="main">
             <div id="left">
-                <h1>Input</h1>
+                <div id="input-code-nav">
+                    <h1 class="nav-title">Input</h1>
+                    <div id="model-select-container">
+                        <p style="margin: 0;">Select model:</p>
+                        <select id="model-select">
+                            {% for model in models %}
+                            <option value="{{model}}">{{model}}</option>
+                            {% else %}
+                            <h1>No models found</h1>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
                 <textarea id="input-code"></textarea>
-                <span style="height: 16px;"></span>
-                <button id="predict-btn" type="button">Predict</button>
+
+                <div id="input-code-nav" style="justify-content: flex-end;">
+                    <button id="predict-btn-all" class="predict-btn" type="button">Predict All</button>
+                    <button id="predict-btn" class="predict-btn" type="button">Predict</button>
+                </div>
             </div>
             <span class="divider" style="width: 16px;"></span>
             <div id="right">
@@ -29,12 +46,17 @@
     </body>
     <script>
         const predictButton = document.getElementById('predict-btn');
+        const predictButtonAll = document.getElementById('predict-btn-all');
         const inputArea = document.getElementById("input-code");
         const lang = document.getElementById("language");
+        const modelSelect = document.getElementById("model-select");
 
         predictButton.addEventListener('click', async () => {
             const url = 'http://localhost/predict';
-            const data = { text: inputArea.value };
+            const data = {
+                snippet: inputArea.value,
+                selected_model: modelSelect.value
+            };
 
             lang.style.color = 'red';
 
@@ -57,7 +79,45 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Something went wrong.');
-                alert(inputArea.value);
+            }
+
+            lang.style.color = 'darkslategrey';
+        });
+
+
+        predictButtonAll.addEventListener('click', async () => {
+            const url = 'http://localhost/predict-all';
+            const data = {
+                snippet: inputArea.value,
+            };
+
+            lang.style.color = 'red';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                let outputHtml = "";
+                result.predictions.forEach(item => {
+                    <!-- outputHtml += `<li class="language-list"><p>${item.model_name}: .${item.language}</p></li>`; -->
+                    outputHtml += `<li class="language-list"><p>${item.model_name}:</p> <h1 class="language">.${item.language}</h1></li>`;
+                });
+
+                lang.innerHTML = `<ul>${outputHtml}</ul>`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong.');
             }
 
             lang.style.color = 'darkslategrey';

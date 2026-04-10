@@ -1,0 +1,8 @@
+services:
+  web:
+    container_name: emycoder-api
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - ./app:/code/app
