@@ -7,30 +7,25 @@ html, body {
 
     display: flex;
     flex-direction: column;
+    background-color: #1F6F5F;
+    color: #232345;
 }
 
-#header {
+#main-content {
     display: flex;
     flex-direction: row;
-    background-color: green;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-.subtitle {
-    color: lightgreen;
-}
-
-.divider {
-    background-color: green;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 16px;
 }
 
 #main {
+    gap: 16px;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
-    flex: 1;
-    width: 100%;
-    min-height: 0;
 }
 
 #left, #right {
@@ -40,6 +35,7 @@ html, body {
     align-items: center;
     box-sizing: border-box;
     padding: 20px;
+    border-radius: 24px;
 }
 
 #left {
@@ -50,6 +46,7 @@ html, body {
     flex: 2;
     overflow-y: scroll;
     font-size: 10;
+    margin-right: 32px;
 }
 
 #input-code-nav {
@@ -60,9 +57,9 @@ html, body {
     width: 100%;
 }
 
-.nav-title {
+.input-title {
     text-align: center;
-    color: darkgreen;
+    color: #232345;
     flex: 3;
 }
 
@@ -100,12 +97,13 @@ html, body {
     padding: 32px;
     resize: none;
     overflow-y: auto;
-    border: 4px solid darkgreen;
+    background-color: #232345;
+    color: white;
     
     font-size: 16px;
 }
 
-.predict-btn {
+.model-btn{
     flex-shrink: 0;
     margin: 8px 16px;
     padding: 16px 48px;
@@ -114,20 +112,31 @@ html, body {
     align-self: self-end;
 }
 
-.predict-btn:hover {
-    background-color: darkgreen;
+.model-btn:hover {
+    background-color: #1F6F5F;
 }
 
-#language {
+.output-label {
     flex-grow: 1;
     align-content: center;
     color: darkslategrey;
     font-size: 64px;
 }
 
-.language-list {
-    /* flex-grow: 1; */
-    /* align-content: center; */
-    /* color: darkslategrey; */
+.output-list {
     font-size: 20px;
+}
+
+.output-container {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    background-color: #232345;
+}
+
+.execution-output {
+    color: white;
+    font-size: 16px;
+    /* align-self: flex-start; */
 }

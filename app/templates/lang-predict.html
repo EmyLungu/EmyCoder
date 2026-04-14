@@ -1,0 +1,35 @@
+{% extends "parts/base.html" %}
+
+{% block title %}Language Predictor{% endblock %}
+
+{% block content %}
+<div id="main">
+    <div id="left">
+        <div id="input-code-nav">
+            <h1 class="input-title">Input</h1>
+            <div id="model-select-container">
+                <p style="margin: 0;">Select model:</p>
+                <select id="model-select">
+                    {% for model in models %}
+                    <option value="{{model}}">{{model}}</option>
+                    {% else %}
+                    <h1>No models found</h1>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <textarea id="input-code"></textarea>
+
+        <div id="input-code-nav" style="justify-content: flex-end;">
+            <button id="predict-all-btn" class="model-btn" type="button">Predict All</button>
+            <button id="predict-btn" class="model-btn" type="button">Predict</button>
+        </div>
+    </div>
+    <div id="right">
+        <h1>Output</h1>
+        <h1 id="output" class="output-label">Lang</h1>
+    </div>
+</div>
+
+<script src="{{ url_for('static', path='js/lang-predict.js') }}"></script> 
+{% endblock %}

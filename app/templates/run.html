@@ -1,0 +1,26 @@
+{% extends "parts/base.html" %}
+
+{% block title %}Run Program{% endblock %}
+
+{% block content %}
+<div id="main">
+    <div id="left">
+        <div id="input-code-nav">
+            <h1 class="input-title">Run a program</h1>
+        </div>
+        <textarea id="input-code"></textarea>
+
+        <div id="input-code-nav" style="justify-content: flex-end;">
+            <button id="run-btn" class="model-btn" type="button">Run</button>
+        </div>
+    </div>
+    <div id="right" style="flex: 5">
+        <h1>Output</h1>
+        <div class="output-container">
+            <h1 id="output" class="execution-output"></h1>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', path='js/run.js') }}"></script> 
+{% endblock %}

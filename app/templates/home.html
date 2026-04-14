@@ -1,141 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>EmyCoder</title>
-        <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
-    </head>
-    <body>
-        <div id="header">
-            <h3 class="subtitle">Model Version {{model_version}}</h3>
-            <h1 style="color: white;">EmyCoder</h1>
-            <a class="subtitle" href="https://github.com/EmyLungu" target="_blank" rel="noopener noreferrer">
-                @Lungu Emanuel-Leonard
-            </a>
+{% extends "parts/base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<link href="{{ url_for('static', path='css/home.css') }}" rel="stylesheet">
+
+<div id="main">
+    <div id="home-container">
+        <h1 class="home-title">Welcome to EmyCoder - v{{model_version}}</h1>
+        <a class="home-subtitle" href="https://github.com/EmyLungu" target="_blank" rel="noopener noreferrer">
+            @Lungu Emanuel-Leonard
+        </a>
+
+        <h1 class="home-section-title">Pages</h1>
+        
+        <div class="home-grid">
+            <a href="/"><div class="grid-btn">Home page</div></a>
+            <a href="/lang-predict"><div class="grid-btn">Language Predictor</div></a>
+            <a href="/run"><div class="grid-btn">Run Program</div></a>
         </div>
-        <div id="main">
-            <div id="left">
-                <div id="input-code-nav">
-                    <h1 class="nav-title">Input</h1>
-                    <div id="model-select-container">
-                        <p style="margin: 0;">Select model:</p>
-                        <select id="model-select">
-                            {% for model in models %}
-                            <option value="{{model}}">{{model}}</option>
-                            {% else %}
-                            <h1>No models found</h1>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <textarea id="input-code"></textarea>
+    </div>
+</div>
 
-                <div id="input-code-nav" style="justify-content: flex-end;">
-                    <button id="predict-btn-all" class="predict-btn" type="button">Predict All</button>
-                    <button id="predict-btn" class="predict-btn" type="button">Predict</button>
-                </div>
-            </div>
-            <span class="divider" style="width: 16px;"></span>
-            <div id="right">
-                <h1>Output</h1>
-                <h1 id="language">Lang</h1>
-            </div>
-            </div>
-        </div>
-    </body>
-    <script>
-        const predictButton = document.getElementById('predict-btn');
-        const predictButtonAll = document.getElementById('predict-btn-all');
-        const inputArea = document.getElementById("input-code");
-        const lang = document.getElementById("language");
-        const modelSelect = document.getElementById("model-select");
-
-        predictButton.addEventListener('click', async () => {
-            const url = 'http://localhost/predict';
-            const data = {
-                snippet: inputArea.value,
-                selected_model: modelSelect.value
-            };
-
-            lang.style.color = 'red';
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const prediction = JSON.stringify(result['language'])
-                lang.innerHTML = '.' + prediction.slice(1, -1)
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Something went wrong.');
-            }
-
-            lang.style.color = 'darkslategrey';
-        });
-
-
-        predictButtonAll.addEventListener('click', async () => {
-            const url = 'http://localhost/predict-all';
-            const data = {
-                snippet: inputArea.value,
-            };
-
-            lang.style.color = 'red';
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                let outputHtml = "";
-                result.predictions.forEach(item => {
-                    <!-- outputHtml += `<li class="language-list"><p>${item.model_name}: .${item.language}</p></li>`; -->
-                    outputHtml += `<li class="language-list"><p>${item.model_name}:</p> <h1 class="language">.${item.language}</h1></li>`;
-                });
-
-                lang.innerHTML = `<ul>${outputHtml}</ul>`;
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Something went wrong.');
-            }
-
-            lang.style.color = 'darkslategrey';
-        });
-
-
-        inputArea.addEventListener('keydown', function(e) {
-            if (e.key == 'Tab') {
-                e.preventDefault();
-
-                var start = this.selectionStart;
-                var end = this.selectionEnd;
-
-                this.value = this.value.substring(0, start) +
-                    "\t" + this.value.substring(end);
-                this.selectionStart =
-                    this.selectionEnd = start + 1;
-            }
-        });
-    </script>
-</html>
+{% endblock %}

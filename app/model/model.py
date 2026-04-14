@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 from scipy.sparse import csr_matrix, hstack
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
