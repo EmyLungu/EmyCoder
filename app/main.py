@@ -153,12 +153,6 @@ def run_snippet(payload: RunIn):
 
             result = client.containers.run(
                 image=conf["image"],
-                # command=[
-                #     "timeout",
-                #     "5s",
-                #     "python",
-                #     "/mnt/code/user_snippet.py",
-                # ],
                 command=(
                     ["timeout", "5s"] + conf["command"]
                     if lang != "cpp"

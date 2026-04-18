@@ -34,7 +34,7 @@ predictBtn.addEventListener('click', async () => {
         alert('Something went wrong.');
     }
 
-    lang.style.color = 'darkslategrey';
+    lang.style.color = 'var(--color-primary)';
 });
 
 
@@ -72,7 +72,7 @@ predictAllBtn.addEventListener('click', async () => {
         alert('Something went wrong.');
     }
 
-    lang.style.color = 'darkslategrey';
+    lang.style.color = 'var(--color-primary)';
 });
 
 

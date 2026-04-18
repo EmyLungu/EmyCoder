@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 from scipy.sparse import csr_matrix, hstack
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
@@ -136,14 +136,6 @@ class MetaFeatureExtractor(BaseEstimator, TransformerMixin):
         X_meta_scaled = self.scaler.transform(X_meta.values)
 
         return hstack([X_text, csr_matrix(X_meta_scaled)])
-
-
-# class Model:
-#     def __init__(self, method):
-#         self.extract_features = method
-#
-#     def preprocess(self):
-#         self.extract_features()
 
 
 __main__.extract_meta_features = extract_meta_features

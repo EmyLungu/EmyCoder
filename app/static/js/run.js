@@ -32,7 +32,7 @@ runBtn.addEventListener('click', async () => {
         alert('Something went wrong.');
     }
 
-    lang.style.color = 'white';
+    lang.style.color = 'var(--color-primary)';
 });
 
 inputArea.addEventListener('keydown', function(e) {

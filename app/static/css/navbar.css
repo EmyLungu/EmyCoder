@@ -2,21 +2,42 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
+    height: 8vh;
+    text-align: center;
 }
 
 .nav-title {
-    color: greenyellow;
-    font-size: 32px;
+    flex: 1;
+    font-size: 2em;
     font-weight: bold;
     text-decoration: underline;
+    color: var(--bg-btn);
     text-underline-offset: 8px;
     text-decoration-style: dotted;
-    text-decoration-thickness: 4px;
+    text-decoration-thickness: 8px;
 }
 
-.subtitle {
-    color: lightgreen;
+.nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+    text-decoration: none;
+    justify-content: center;
+}
+
+.nav-link h3:hover {
+    color: var(--bg-btn);
+}
+
+.nav-link img {
+    display: block;
+    height: 1.8em;
+    width: 1.8em;
+    object-fit: contain;
+    filter: invert(1);
 }
 
 #sidebar-btn {
@@ -31,7 +52,7 @@
 }
 
 #sidebar-btn:hover {
-    background-color: greenyellow;
+    background-color: var(--bg-btn);
     img {
         filter: invert(0);
     }
@@ -63,13 +84,11 @@
 }
 
 .sidebar-link {
-    color: lightgreen;
+    color: var(--bg-btn);
     padding: 16px 0;
     padding-left: 16px;
-    border-radius: 8px;
+    border-radius: 16px;
     font-weight: bold;
-
-    transition: 0.2s ease-out;
 
     display: flex;
     align-items: center;
@@ -82,6 +101,5 @@ a:has(.sidebar-link) {
 }
 
 .sidebar-link:hover {
-    background-color: greenyellow;
-    color: green;
+    background-color: var(--bg-primary);
 }

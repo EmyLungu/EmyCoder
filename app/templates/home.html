@@ -5,20 +5,16 @@
 {% block content %}
 <link href="{{ url_for('static', path='css/home.css') }}" rel="stylesheet">
 
-<div id="main">
-    <div id="home-container">
-        <h1 class="home-title">Welcome to EmyCoder - v{{model_version}}</h1>
-        <a class="home-subtitle" href="https://github.com/EmyLungu" target="_blank" rel="noopener noreferrer">
-            @Lungu Emanuel-Leonard
-        </a>
+<div id="home-container" class="bg-primary">
+    <h1 class="home-title color-primary">Welcome to EmyCoder</h1>
+    <h3 class="color-secondary">Version {{model_version}}</h3>
 
-        <h1 class="home-section-title">Pages</h1>
-        
-        <div class="home-grid">
-            <a href="/"><div class="grid-btn">Home page</div></a>
-            <a href="/lang-predict"><div class="grid-btn">Language Predictor</div></a>
-            <a href="/run"><div class="grid-btn">Run Program</div></a>
-        </div>
+    <h1 class="home-section-title color-secondary">Pages</h1>
+
+    <div class="home-grid">
+        <a href="/"><div class="grid-btn">Home page</div></a>
+        <a href="/lang-predict"><div class="grid-btn">Language Predictor</div></a>
+        <a href="/run"><div class="grid-btn">Run Program</div></a>
     </div>
 </div>
 
