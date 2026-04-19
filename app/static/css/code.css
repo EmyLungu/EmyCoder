@@ -76,7 +76,7 @@
     resize: none;
     overflow-y: auto;
     background-color: var(--bg-secondary);
-    border: 0;
+    border: 2px solid var(--bg-btn);
 
     font-size: 1em;
     font-family: "JetBrains Mono", monospace;

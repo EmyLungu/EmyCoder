@@ -9,7 +9,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
   
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: "emycoder-tunnel"
-    command: tunnel --url http://emycoder-api:80
+  # tunnel:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: "emycoder-tunnel"
+  #   command: tunnel --url http://emycoder-api:80

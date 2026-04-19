@@ -1,6 +1,8 @@
 .env
-venv
-**/*.pkl
-**/*.joblib
-**/*.parquet
-**/*.csv
+venv/
+*.pkl
+*.joblib
+*.parquet
+*.csv
+__pycache__/
+log.txt
