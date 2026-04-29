@@ -2,10 +2,16 @@
 
 EmyCoder is a high-performance FastAPI application that uses machine learning to identify the programming language of a code snippet and executes it within isolated environment.
 
+#### Predictor:
+![Predictor preview Image](preview/predictor.png)
+#### Runner:
+![Runner preview Image](preview/runner.png)
+
 ## 🚀 Key Features
 
 * **Language Detection:** Uses an incrementally trained `scikit-learn` model to identify code languages.
 * **Version Control:** Users can toggle between different iterations of the ML model.
+They can also run all the models and get each and every one's prediction.
 * **Secure Execution:** Code snippets are executed inside isolated **Docker containers** to ensure host safety.
 * **Custom Dataset:** Trained on a unique dataset scraped from GitHub and stored in **MongoDB**.
 * **RESTful API:** Clean and documented endpoints powered by FastAPI.
