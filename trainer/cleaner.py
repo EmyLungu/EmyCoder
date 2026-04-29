@@ -1,10 +1,8 @@
+# DEPRECATED
 import pandas as pd
 import re
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-DATA_DIR = os.getenv('DATA_DIR')
+DATA_DIR = "./data/"
 
 
 def remove_comments(text: str, language: str) -> str:
