@@ -1,4 +1,5 @@
 import __main__
+import re
 import pickle
 import joblib
 from pathlib import Path
@@ -12,10 +13,13 @@ __main__.MetaFeatureExtractor = MetaFeatureExtractor
 MODEL_DIR = Path(__file__).resolve(strict=True).parent
 
 
-def load_models() -> dict:
+def load_models() -> (dict, str):
     models = {}
 
     models_dir = Path(f"{MODEL_DIR}/models/")
+
+    best_model = "sgdc-pipeline-4.joblib"
+    current_best = -1
 
     for file_path in models_dir.iterdir():
         if file_path.is_file():
@@ -27,7 +31,12 @@ def load_models() -> dict:
             if ext == ".joblib":
                 models[file_path.stem] = joblib.load(file_path)
 
-    return models
+        pattern = r".+-(\d+)"
+        current = int(re.search(pattern, file_path.stem).group(1))
+        current_best = max(current_best, current)
+
+    best_model = f"sgdc-pipeline-{current_best}.joblib"
+    return (models, best_model)
 
 
 def predict_pipeline(model: dict, model_name: str, text: str) -> str:

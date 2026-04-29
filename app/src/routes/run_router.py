@@ -4,7 +4,7 @@ import os
 import tempfile
 from docker.errors import ContainerError
 
-from app.src.configs import CONFIGS, MAX_OUTPUT_SIZE
+from app.src.configs import CONFIGS, MAX_OUTPUT_SIZE, BEST_MODEL
 from app.src.configs import templates, VERSION, client
 from app.src.data_types import RunIn, RunOut, PredictModelIn
 
@@ -25,9 +25,10 @@ def run_page(request: Request):
 @router.post("/run-snippet", response_model=RunOut)
 def run_snippet(payload: RunIn):
     p = PredictModelIn(
-        snippet=payload.snippet, selected_model="sgdc-pipeline-4"
+        snippet=payload.snippet, selected_model=BEST_MODEL
     )
     lang = predict(p).get("language")
+    lang_output = f"{lang} - {BEST_MODEL.strip(".joblib")}"
     conf = CONFIGS.get(lang)
 
     try:
@@ -67,15 +68,15 @@ def run_snippet(payload: RunIn):
 
         if len(output) > MAX_OUTPUT_SIZE:
             output = output[:MAX_OUTPUT_SIZE] + "\n[Output truncated...]"
-        return {"output": output, "language": lang}
+        return {"output": output, "language": lang_output}
 
     except ContainerError as e:
         error_output = e.stderr.decode("utf-8")
         return {
             "output": error_output if error_output else "Execution timed out!",
-            "language": lang,
+            "language": lang_output,
         }
 
     except Exception as e:
         print(f"[RUN SNIPPET - SYSTEM ERORR]: {e}")
-        return {"output": "Execution failed!", "language": lang}
+        return {"output": "Execution failed!", "language": lang_output}

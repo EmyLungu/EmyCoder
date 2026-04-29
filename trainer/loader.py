@@ -26,4 +26,4 @@ def export_to_parquet(filename: str = 'dataset.parquet') -> None:
 
 
 if __name__ == '__main__':
-    export_to_parquet()
+    export_to_parquet('dataset-v3.parquet')

@@ -34,7 +34,7 @@ CONFIGS = {
 CONFIGS["c"] = CONFIGS["cpp"]
 
 
-models = load_models()
+models, BEST_MODEL = load_models()
 client = docker.from_env()
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))

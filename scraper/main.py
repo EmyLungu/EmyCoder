@@ -102,7 +102,7 @@ class Scraper:
 
         file_resp = session.get(raw_url)
         if file_resp.status_code == 200:
-            self.add_row(file_resp.text, extenstion, raw_url)
+            self.add_row(file_resp.text, extenstion, repo)
 
     def update_log(self) -> None:
         logfile = SCRAPER_DIR / "log.txt"
