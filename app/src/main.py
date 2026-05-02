@@ -5,6 +5,9 @@ from app.src.configs import BASE_DIR, VERSION, templates, lifespan
 
 from app.src.routes.lang_predict_router import router as lang_predict_router
 from app.src.routes.run_router import router as run_router
+from app.src.routes.code_extractor_router import (
+    router as code_extractor_router,
+)
 
 app = FastAPI(lifespan=lifespan)
 app.mount(
@@ -16,6 +19,7 @@ app.mount(
 
 app.include_router(lang_predict_router)
 app.include_router(run_router)
+app.include_router(code_extractor_router)
 
 
 @app.get("/")

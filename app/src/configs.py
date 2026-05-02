@@ -7,7 +7,7 @@ from pathlib import Path
 
 from app.src.model.model import model_service
 
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MAX_OUTPUT_SIZE = 5000

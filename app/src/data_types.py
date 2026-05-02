@@ -30,3 +30,7 @@ class RunIn(BaseModel):
 class RunOut(BaseModel):
     output: str
     language: str
+
+
+class CodeExtractorOut(BaseModel):
+    snippet: str
