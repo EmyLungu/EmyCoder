@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
-from app.src.configs import BASE_DIR, VERSION, templates
+from app.src.configs import BASE_DIR, VERSION, templates, lifespan
 
 from app.src.routes.lang_predict_router import router as lang_predict_router
 from app.src.routes.run_router import router as run_router
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.mount(
     "/static",
     StaticFiles(directory=str(BASE_DIR / "static")),

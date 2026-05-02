@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 
 import os
 import tempfile
 from docker.errors import ContainerError
 
-from app.src.configs import CONFIGS, MAX_OUTPUT_SIZE, BEST_MODEL
+from app.src.configs import CONFIGS, MAX_OUTPUT_SIZE, get_model_service
 from app.src.configs import templates, VERSION, client
-from app.src.data_types import RunIn, RunOut, PredictModelIn
 
-from app.src.routes.lang_predict_router import predict
+from app.src.data_types import RunIn, RunOut
 
 router = APIRouter()
 
@@ -23,12 +22,10 @@ def run_page(request: Request):
 
 
 @router.post("/run-snippet", response_model=RunOut)
-def run_snippet(payload: RunIn):
-    p = PredictModelIn(
-        snippet=payload.snippet, selected_model=BEST_MODEL
-    )
-    lang = predict(p).get("language")
-    lang_output = f"{lang} - {BEST_MODEL.strip(".joblib")}"
+def run_snippet(payload: RunIn, service=Depends(get_model_service)):
+    lang = service.predict_pipeline(service.best_model, payload.snippet)
+    lang_output = f"{lang} - {service.best_model.strip(".joblib")}"
+
     conf = CONFIGS.get(lang)
 
     try:

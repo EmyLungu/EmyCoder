@@ -1,9 +1,11 @@
+from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
+from contextlib import asynccontextmanager
 
 import docker
 from pathlib import Path
 
-from app.src.model.model import load_models
+from app.src.model.model import model_service
 
 VERSION = "0.1.5"
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +35,17 @@ CONFIGS = {
 }
 CONFIGS["c"] = CONFIGS["cpp"]
 
-
-models, BEST_MODEL = load_models()
 client = docker.from_env()
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    model_service.load_models()
+
+    yield
+
+
+def get_model_service():
+    return model_service
