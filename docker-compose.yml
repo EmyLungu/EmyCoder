@@ -4,12 +4,31 @@ services:
     build: .
     ports:
       - "80:80"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
       - ./app:/code/app
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
+    depends_on:
+      - mlflow
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.11.1
+    container_name: emycoder-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_data:/mlflow_data
+    command: >
+      mlflow server 
+      --backend-store-uri sqlite:////mlflow_data/mlflow.db 
+      --default-artifact-root mlflow-artifacts:/
+      --artifacts-destination /mlflow_data/artifacts 
+      --serve-artifacts
+      --host 0.0.0.0
   
   # tunnel:
   #   image: cloudflare/cloudflared:latest
   #   container_name: "emycoder-tunnel"
-  #   command: tunnel --url http://emycoder-api:80
+  #   command: tunnel --url http://emycoder-api:8000
