@@ -1,41 +1,44 @@
-import __main__
-import re
-import pickle
-import joblib
+import os
+
 from pathlib import Path
 import pandas as pd
 
-from app.src.model.features import extract_meta_features, MetaFeatureExtractor
+from dotenv import load_dotenv
 
-__main__.extract_meta_features = extract_meta_features
-__main__.MetaFeatureExtractor = MetaFeatureExtractor
+import mlflow
+from mlflow.tracking import MlflowClient
 
 MODEL_DIR = Path(__file__).resolve(strict=True).parent
+
+load_dotenv()
 
 
 def load_models() -> (dict, str):
     models = {}
+    best_model = None
 
-    models_dir = Path(f"{MODEL_DIR}/models/")
+    client = MlflowClient(os.getenv("MLFLOW_TRACKING_URI"))
+    model_name = "Language-Classifier-SGDC"
+    versions = client.search_model_versions(f"name='{model_name}'")
 
-    best_model = "sgdc-pipeline-4.joblib"
-    current_best = -1
+    for v in versions:
+        uri = f"models:/{model_name}/{v.version}"
 
-    for file_path in models_dir.iterdir():
-        if file_path.is_file():
-            ext = file_path.suffix.lower()
+        try:
+            model = mlflow.sklearn.load_model(uri)
+            models[f"{model_name}-{v.version}"] = model
+        except Exception as e:
+            print(f"Failed to load model: {uri} [{e}]")
 
-            if ext == ".pkl":
-                with open(file_path, "rb") as file:
-                    models[file_path.stem] = pickle.load(file)
-            if ext == ".joblib":
-                models[file_path.stem] = joblib.load(file_path)
+    try:
+        champion_version = client.get_model_version_by_alias(
+            model_name, "champion"
+        )
+        best_model = f"{model_name}-{champion_version.version}"
+    except Exception as e:
+        print(f"Could not resolve '@champion' alias: {e}")
+        best_model = models.keys()[0]
 
-        pattern = r".+-(\d+)"
-        current = int(re.search(pattern, file_path.stem).group(1))
-        current_best = max(current_best, current)
-
-    best_model = f"sgdc-pipeline-{current_best}.joblib"
     return (models, best_model)
 
 

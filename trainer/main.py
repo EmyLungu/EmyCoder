@@ -7,11 +7,10 @@ import mlflow
 from trainer import Trainer, BASE_DIR as TRAINER_BASE_DIR
 from meta_features import MetaFeatureExtractor
 
-meta_feature_extractor_path = (
+META_FEATURES = TRAINER_BASE_DIR / "meta_features.py"
+META_FEATURES_EXTRACTOR = (
     f"{MetaFeatureExtractor.__module__}.{MetaFeatureExtractor.__name__}"
 )
-
-CONFFUSION_MATRIX = TRAINER_BASE_DIR / "confusion_matrix.png"
 
 
 if __name__ == "__main__":
@@ -32,24 +31,14 @@ if __name__ == "__main__":
         trainer = Trainer("dataset-v2", params)
         trainer.run()
 
-        accuracy, report = trainer.test()
-
-        mlflow.log_metric("accuracy", accuracy)
-
-        for label, metrics in report.items():
-            if isinstance(metrics, dict):
-                mlflow.log_metric(f"{label}_f1", metrics['f1-score'])
-
-        mlflow.log_metric("Sample size", len(trainer))
-        mlflow.log_metric("Training time", trainer.duration)
+        trainer.test()
 
         mlflow.sklearn.log_model(
             sk_model=trainer.pipeline,
+            registered_model_name="Language-Classifier-SGDC",
             name="SGDC",
             serialization_format="skops",
-            skops_trusted_types=[meta_feature_extractor_path],
+            skops_trusted_types=[META_FEATURES_EXTRACTOR],
+            code_paths=[str(META_FEATURES)],
         )
-        mlflow.log_artifact(CONFFUSION_MATRIX)
         mlflow.log_artifact(__file__)
-
-    CONFFUSION_MATRIX.unlink(missing_ok=True)

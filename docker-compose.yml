@@ -27,6 +27,7 @@ services:
       --artifacts-destination /mlflow_data/artifacts 
       --serve-artifacts
       --host 0.0.0.0
+      --allowed-hosts "*"
   
   # tunnel:
   #   image: cloudflare/cloudflared:latest

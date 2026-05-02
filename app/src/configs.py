@@ -5,7 +5,7 @@ from pathlib import Path
 
 from app.src.model.model import load_models
 
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MAX_OUTPUT_SIZE = 5000

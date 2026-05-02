@@ -11,6 +11,7 @@ from sklearn.utils.class_weight import compute_class_weight
 from sklearn.metrics import accuracy_score, confusion_matrix
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report
+import mlflow
 
 from meta_features import MetaFeatureExtractor
 
@@ -163,8 +164,8 @@ class Trainer:
         seconds = int(self.duration % 60)
         print(f"Elapsed time: {minutes}min {seconds}s")
 
-    def test(self) -> (float, dict):
-        """Prints some statistics and returns the accuracy score"""
+    def test(self) -> None:
+        """Prints some statistics and logs to mlflow"""
 
         preds = self.pipeline.predict(self.X_test)
         accuracy = accuracy_score(self.y_test, preds)
@@ -177,12 +178,21 @@ class Trainer:
             confusion_matrix=cm, display_labels=self.model.classes_
         )
         disp.plot(cmap="Blues", values_format="d")
-        plt.savefig(BASE_DIR / "confusion_matrix.png")
-        plt.close()
 
         report = classification_report(self.y_test, preds, output_dict=True)
 
-        return accuracy, report
+        if mlflow.active_run():
+            mlflow.log_metric("accuracy", accuracy)
+
+            for label, metrics in report.items():
+                if isinstance(metrics, dict):
+                    mlflow.log_metric(f"{label}_f1", metrics['f1-score'])
+
+            mlflow.log_metric("Sample size", len(self))
+            mlflow.log_metric("Training time", self.duration)
+            mlflow.log_figure(plt.gcf(), "confussion_matrix.png")
+
+        plt.close()
 
     def save_to_file(self, filename: str) -> None:
         """Saves the pipeline to disk"""

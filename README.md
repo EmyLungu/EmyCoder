@@ -27,6 +27,7 @@ They can also run all the models and get each and every one's prediction.
 
 * **Framework:** [FastAPI](https://fastapi.tiangolo.com/)
 * **ML Library:** [scikit-learn](https://scikit-learn.org/) (Incremental learning using `SGDClassifier` and `partial_fit`)
+* **MLFlow** [mlflow](https://mlflow.org/) (Models management and deployment)
 * **Database:** [MongoDB](https://www.mongodb.com/) (Training data storage)
 * **Containerization:** [Docker](https://www.docker.com/) (Snippet isolation)
 * **Language:** Python 3.14-slim
@@ -44,6 +45,6 @@ They can also run all the models and get each and every one's prediction.
 - Start the MongoDB container `db/docker-compose.yml` and `db/initalizer.py`
 2. Run the `scraper/main.py`
 3. Load the data from the db to a `.parquet` file using the `trainer/loader.py`
-- Train using `trainer/train_sgdc.ipynb`
-- Move the trained model to `app/src/model/models/`
-- Start FastAPi `docker-compose.yml`
+- Start `MLFlow` local server and `FastAPi` instance from `docker-compose.yml`
+- Train using `trainer/main.py`:
+the runs are automatically registered in the model registry, add your best model the `@champion` alias.
