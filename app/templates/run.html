@@ -13,11 +13,7 @@
         <textarea id="input-code"></textarea>
 
         <div id="input-code-nav" style="margin-top: 0.5em;">
-            <div class="btn-pannel">
-                <label for="file">Choose file to upload</label>
-                <input type="file" id="img-code" name="file" multiple/>
-                <button id="extract-code-btn" class="model-btn" type="button">Get Code</button>
-            </div>
+            {% include "parts/extract-code.html" %}
             <div class="btn-pannel">
                 <button id="run-btn" class="model-btn" type="button">Run</button>
             </div>

@@ -2,8 +2,11 @@ const extractCodeBtn = document.getElementById('extract-code-btn');
 const imgCode = document.getElementById('img-code');
 const inputArea = document.getElementById("input-code");
 
+const extractLoader = document.getElementById("extract-loader");
+
 extractCodeBtn.addEventListener('click', async () => {
     const formData = new FormData();
+    extractLoader.style.display = "block";
 
     formData.append('file', imgCode.files[0]);
 
@@ -23,5 +26,7 @@ extractCodeBtn.addEventListener('click', async () => {
             console.error('Error:', error)
             alert('Something went wrong.');
         });
+
+    extractLoader.style.display = "none";
 });
 
