@@ -7,7 +7,7 @@
 
 <div id="main">
     <div id="left">
-        <div id="input-code-nav">
+        <div class="input-code-nav">
             <h1 class="input-title" >Input</h1>
             <div id="model-select-container">
                 <p style="margin: 0;">Select model:</p>
@@ -20,9 +20,10 @@
                 </select>
             </div>
         </div>
-        <textarea id="input-code"></textarea>
 
-        <div id="input-code-nav" style="margin-top: 0.5em">
+        <textarea id="input-code" class="text-input"></textarea>
+
+        <div class="input-code-nav" style="margin-top: 0.5em">
             {% include "parts/extract-code.html" %}
             <div class="btn-pannel">
                 <button id="predict-all-btn" class="model-btn" type="button">Predict All</button>
@@ -30,6 +31,7 @@
             </div>
         </div>
     </div>
+    <div id="resizer-code" class="resizer"><div class="resizer-inner"></div></div>
     <div id="right">
         <h1>Output</h1>
         <h1 id="output" class="output-label">Lang</h1>
@@ -40,4 +42,5 @@
 <script type="module" src="{{ url_for('static', path='js/code-input.js') }}"></script> 
 <script type="module" src="{{ url_for('static', path='js/lang-predict.js') }}"></script> 
 <script type="module" src="{{ url_for('static', path='js/code-extractor.js') }}"></script> 
+<script type="module" src="{{ url_for('static', path='js/resizer.js') }}"></script> 
 {% endblock %}

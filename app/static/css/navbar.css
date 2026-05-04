@@ -1,9 +1,8 @@
 #nav-bar {
+    flex: 0.05;
     display: flex;
     flex-direction: row;
     align-items: center;
-    /* justify-content: space-evenly; */
-    height: 8vh;
     text-align: center;
 }
 
@@ -42,9 +41,9 @@
 
 #sidebar-btn {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    left: 16px;
+    width: 3em;
+    height: 3em;
+    left: 1em;
     border: 0;
     border-radius: 12px;
     background-color: transparent;
@@ -64,6 +63,7 @@
     width: 100%;
     object-fit: contain;
     filter: invert(1);
+    transition: 0.3s ease-out;
 }
 
 #sidebar {
@@ -81,6 +81,12 @@
 #sidebar.hidden {
     width: 0;
     padding: 0;
+}
+
+#sidebar-btn.direction {
+    img {
+        transform: rotate(180deg);
+    }
 }
 
 .sidebar-link {
