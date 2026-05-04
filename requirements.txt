@@ -1,8 +1,9 @@
 fastapi[standard]==0.135.2
-pydantic==2.12.5
-scikit-learn==1.8.0
-pandas==3.0.1
-docker==7.1.0
-mlflow-skinny==3.11.1
 easyocr==1.7.2
+llama_cpp_python==0.3.22
+scikit-learn==1.8.0
+mlflow-skinny==3.11.1
+docker==7.1.0
+pandas==3.0.1
 skops==0.14.0
+pydantic==2.12.5

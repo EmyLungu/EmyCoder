@@ -15,7 +15,8 @@ extractCodeBtn.addEventListener('click', async () => {
         .then(result => {
             const snippet = JSON.stringify(result['snippet'])
                 .slice(1, -1)
-                .replaceAll("\\n", "\n");
+                .replaceAll("\\n", "\n")
+                .replaceAll("\\\"", "\"");
             inputArea.value += snippet
         })
         .catch(error => {
