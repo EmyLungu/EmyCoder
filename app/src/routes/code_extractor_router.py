@@ -1,18 +1,12 @@
 import easyocr
-from llama_cpp import Llama
 from fastapi import APIRouter, UploadFile, File
 
 from app.src.data_types import CodeExtractorOut
+from app.src.configs import llm
 
 router = APIRouter()
 
 reader = easyocr.Reader(["en"])
-
-llm = Llama(
-    model_path="./app/src/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
-    n_ctx=2048,
-    n_threads=4,
-)
 
 
 @router.post("/code-extractor", response_model=CodeExtractorOut)

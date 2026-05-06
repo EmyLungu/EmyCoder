@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 class PredictModelIn(BaseModel):
@@ -34,3 +35,13 @@ class RunOut(BaseModel):
 
 class CodeExtractorOut(BaseModel):
     snippet: str
+
+
+class ChatIn(BaseModel):
+    messages: List[str]
+    snippet: str
+    output: str
+
+
+class ChatOut(BaseModel):
+    message: str

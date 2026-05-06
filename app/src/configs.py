@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 
+from llama_cpp import Llama
+
 import docker
 from pathlib import Path
 
@@ -38,6 +40,13 @@ CONFIGS["c"] = CONFIGS["cpp"]
 client = docker.from_env()
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+llm = Llama(
+    model_path="./app/src/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
+    n_ctx=2048,
+    n_threads=4,
+)
 
 
 @asynccontextmanager
