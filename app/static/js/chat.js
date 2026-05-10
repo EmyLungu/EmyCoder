@@ -51,7 +51,7 @@ sendChatBtn.addEventListener('click', async () => {
     addMessage(inputChat.value, true);
     inputChat.value = "";
 
-    const messagesList = [...messages.children].map(child => child.innerText).reverse();
+    const messagesList = [...messages.children].map(child => child.innerText);
 
     const data = {
         messages: messagesList,

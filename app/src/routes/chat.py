@@ -14,32 +14,43 @@ async def chat(payload: ChatIn):
 
     system_msg = SystemMessage(
         content=(
-            "You are an expert coding assistant. "
-            "Analyze the code and the execution output "
-            "provided to solve the user's issue."
+            "You are a Senior Systems Architect and Technical Instructor. "
+            "Respond with absolute brevity.\n\n"
+            "**Output Template (strictly follow):**\n"
+            "- **Diagnosis**: [One sentence — the root cause]\n"
+            "- **Implementation**: [One clean code block only]\n"
+            "- **Constraint**: [One technical tip]\n\n"
+            "**Hard rules — violation is failure:**\n"
+            "- ONE code block maximum. Never two.\n"
+            "- NEVER write console output, logs, or execution results.\n"
+            "- NEVER repeat or paraphrase the user's request.\n"
+            "- NEVER add pleasantries or filler.\n"
+            "- If continuing a conversation, "
+            "do NOT re-explain prior solutions."
         )
     )
 
+    history_messages = payload.messages[:-1]
+    if len(history_messages) % 2 != 0:
+        history_messages = history_messages[1:]
+    history_messages = history_messages[-MAX_CONVERSATION_MESSAGES:]
+
     conversation = [system_msg]
 
-    isUser = True
-    for message in payload.messages[:-1][-MAX_CONVERSATION_MESSAGES:]:
-        conversation.append(
-            HumanMessage(content=message)
-            if isUser
-            else AIMessage(content=message)
-        )
-        isUser = not isUser
+    for i, message in enumerate(history_messages):
+        if i % 2 == 0:
+            conversation.append(HumanMessage(content=message))
+        else:
+            conversation.append(AIMessage(content=message))
 
     context = (
-        f"Context Snippet:\n```\n{payload.snippet}\n```\n"
-        f"Execution Result: {payload.output}\n"
-        f"Current Task: {payload.messages[-1]}"
+        f"Task: {payload.messages[-1]}\n\n"
+        f"Source code:\n```\n{payload.snippet}\n```"
+        f"Execution log:\n{payload.output}\n"
     )
 
     conversation.append(HumanMessage(content=context))
 
-    # response = await llm.ainvoke(conversation)
     async def generate_stream():
         async for chunck in llm.astream(conversation):
             yield chunck.content

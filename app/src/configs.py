@@ -48,8 +48,15 @@ llm = ChatOllama(
     model="emycoder-qwen",
     base_url=os.getenv("OLLAMA_BASE_URL"),
     timeout=30,
-    num_predict=1024,
-    stop=["<|endoftext|>", "User:"]
+    num_predict=512,
+    stop=[
+        "<|endoftext|>",
+        "User:",
+        "The execution log will show",
+        "This confirms",
+        "When you run",
+    ],
+    repeat_penalty=1.3
 )
 
 MAX_CONVERSATION_MESSAGES = 10
