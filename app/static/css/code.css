@@ -20,7 +20,6 @@
     flex: 0.8;
     display: flex;
     flex-direction: column;
-    border-radius: 0 1.5em 1.5em 0;
 }
 
 #right {

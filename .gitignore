@@ -4,6 +4,7 @@ venv/
 *.joblib
 *.parquet
 *.csv
+*.gguf
 __pycache__/
 log.txt
 mlflow_data

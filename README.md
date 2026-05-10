@@ -10,10 +10,11 @@ EmyCoder is a high-performance FastAPI application that uses machine learning to
 ## 🚀 Key Features
 
 * **Language Detection:** Uses an incrementally trained `scikit-learn` model to identify code languages.
-* **Version Control:** Users can toggle between different iterations of the ML model.
+* **Version Control:** Users can toggle between different iterations of the ML model hosted on the `MLFlow server`.
 They can also run all the models and get each and every one's prediction.
 * **Secure Execution:** Code snippets are executed inside isolated **Docker containers** to ensure host safety.
-* **Custom Dataset:** Trained on a unique dataset scraped from GitHub and stored in **MongoDB**.
+* **Self-hosted Chat Assistant** The user can **ask for help** in a **chat** based environment.
+* **Custom Dataset:** The Language Classifier was **trained** on a unique dataset scraped from GitHub and stored in **MongoDB**.
 * **RESTful API:** Clean and documented endpoints powered by FastAPI.
 
 ## 🏗️ Architecture
@@ -26,11 +27,12 @@ They can also run all the models and get each and every one's prediction.
 ## 🛠️ Tech Stack
 
 * **Framework:** [FastAPI](https://fastapi.tiangolo.com/)
-* **ML Library:** [scikit-learn](https://scikit-learn.org/) (Incremental learning using `SGDClassifier` and `partial_fit`)
+* **ML Library:** [scikit-learn](https://scikit-learn.org/) (Incremental learning using `SGDClassifier`)
 * **MLFlow** [mlflow](https://mlflow.org/) (Models management and deployment)
+* **Ollama:** [Ollama](https://ollama.com/) (Locally hosted LLM Inference Engine)
+* **LangChain** [LangChain](https://www.langchain.com/) (Turns the Ollama hosted models into a Chat-based Assistants)
 * **Database:** [MongoDB](https://www.mongodb.com/) (Training data storage)
 * **Containerization:** [Docker](https://www.docker.com/) (Snippet isolation)
-* **Language:** Python 3.14-slim
 
 ## 📥 Getting Started
 
@@ -48,3 +50,10 @@ They can also run all the models and get each and every one's prediction.
 - Start `MLFlow` local server and `FastAPi` instance from `docker-compose.yml`
 - Train using `trainer/main.py`:
 the runs are automatically registered in the model registry, add your best model the `@champion` alias.
+
+
+### Ollama Setup
+- Download a local LLM and put it in `ollama/`
+- Write Modelfile as in example
+- Add it to the ollama server: `docker exec -it emycoder-ollama ollama create emycoder-qwen -f /root/models/Modelfile`
+- Check if it is listed: `docker exec -it emycoder-ollama ollama list`
