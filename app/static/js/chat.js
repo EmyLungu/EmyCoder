@@ -6,6 +6,8 @@ const inputChat = document.getElementById("input-chat");
 
 const inputArea = document.getElementById("input-code");
 const output = document.getElementById("output");
+const outputStatus = document.getElementById("output-status");
+const chatLoader = document.getElementById("chat-loader");
 
 function addMessage(message, isUser) {
     const newMsg = document.createElement("span");
@@ -51,13 +53,18 @@ sendChatBtn.addEventListener('click', async () => {
     addMessage(inputChat.value, true);
     inputChat.value = "";
 
+    let outputText = ""
+    if (outputStatus.innerText === "Execution: Error") {
+        outputText = output.innerText
+    }
+
     const messagesList = [...messages.children].map(child => child.innerText);
 
     const data = {
         messages: messagesList,
         snippet: inputArea.value,
-        output: output.innerText,
+        output: outputText,
     };
 
-    postAction('/chat', data, chatCallback)
+    postAction('/chat', data, chatCallback, chatLoader)
 });

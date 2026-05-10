@@ -1,4 +1,4 @@
-import easyocr
+# import easyocr
 from fastapi import APIRouter, UploadFile, File
 
 from app.src.data_types import CodeExtractorOut
@@ -6,15 +6,15 @@ from app.src.configs import llm
 
 router = APIRouter()
 
-reader = easyocr.Reader(["en"])
+# reader = easyocr.Reader(["en"])
 
 
 @router.post("/code-extractor", response_model=CodeExtractorOut)
 async def predict(file: UploadFile = File(...)):
     file_bytes = await file.read()
-    results = reader.readtext(file_bytes)
+    # results = reader.readtext(file_bytes)
 
-    ocr_output = " ".join([text for bbox, text, confidence in results])
+    # ocr_output = " ".join([text for bbox, text, confidence in results])
 
     system_msg = (
         "You are a code OCR correction tool. "
@@ -37,7 +37,7 @@ async def predict(file: UploadFile = File(...)):
         f"<|im_start|>system\n{system_msg}<|im_end|>\n"
         # f"<|im_start|>user\n{example_user}<|im_end|>\n"
         # f"<|im_start|>assistant\n{example_assistant}<|im_end|>\n"
-        f"<|im_start|>user\n{ocr_output}<|im_end|>\n"
+        # f"<|im_start|>user\n{ocr_output}<|im_end|>\n"
         f"<|im_start|>assistant\n"
     )
 

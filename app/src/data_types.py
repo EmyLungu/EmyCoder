@@ -31,6 +31,7 @@ class RunIn(BaseModel):
 class RunOut(BaseModel):
     output: str
     language: str
+    status: str
 
 
 class CodeExtractorOut(BaseModel):

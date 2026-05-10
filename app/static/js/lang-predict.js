@@ -5,7 +5,7 @@ const predictAllBtn = document.getElementById('predict-all-btn');
 const inputArea = document.getElementById("input-code");
 const lang = document.getElementById("output");
 const modelSelect = document.getElementById("model-select");
-
+const outputLoader = document.getElementById("output-loader");
 
 async function predictCallback(response) {
     const result = await response.json();
@@ -30,7 +30,7 @@ predictBtn.addEventListener('click', async () => {
         selected_model: modelSelect.value
     };
 
-    postAction('/predict', data, predictCallback)
+    postAction('/predict', data, predictCallback, outputLoader)
 });
 
 predictAllBtn.addEventListener('click', async () => {
@@ -38,5 +38,5 @@ predictAllBtn.addEventListener('click', async () => {
         snippet: inputArea.value,
     };
 
-    postAction('/predict-all', data, predictAllCallback)
+    postAction('/predict-all', data, predictAllCallback, outputLoader)
 });

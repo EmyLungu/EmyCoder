@@ -65,15 +65,20 @@ def run_snippet(payload: RunIn, service=Depends(get_model_service)):
 
         if len(output) > MAX_OUTPUT_SIZE:
             output = output[:MAX_OUTPUT_SIZE] + "\n[Output truncated...]"
-        return {"output": output, "language": lang_output}
+        return {"output": output, "language": lang_output, "status": "success"}
 
     except ContainerError as e:
         error_output = e.stderr.decode("utf-8")
         return {
             "output": error_output if error_output else "Execution timed out!",
             "language": lang_output,
+            "status": "error"
         }
 
     except Exception as e:
         print(f"[RUN SNIPPET - SYSTEM ERORR]: {e}")
-        return {"output": "Execution failed!", "language": lang_output}
+        return {
+            "output": "Execution failed!",
+            "language": lang_output,
+            "status": "system_failure",
+        }

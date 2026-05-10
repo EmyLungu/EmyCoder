@@ -17,6 +17,7 @@
         </div>
 
         <textarea id="input-code" class="text-input"></textarea>
+        <!-- <div id="editor-container" class="text-input"></div> -->
 
         <div class="input-code-nav" style="margin-top: 0.5em;">
             {% include "parts/extract-code.html" %}
@@ -29,6 +30,10 @@
     <div id="right">
         <h1>Output</h1>
         <div class="output-container">
+            <h1 id="output-classifier" class="execution-output"></h1>
+            <h5 id="output-status"></h5>
+            <hr>
+            <span id="output-loader" class="loader" style="display: none"></span>
             <h1 id="output" class="execution-output"></h1>
         </div>
     </div>

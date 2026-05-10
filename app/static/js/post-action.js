@@ -1,7 +1,7 @@
-const lang = document.getElementById("output");
-
-export async function postAction(url, data, callback) {
-    lang.style.color = 'red';
+export async function postAction(url, data, callback, loader=null) {
+    if (loader !== null) {
+        loader.style.display = 'block';
+    }
 
     await fetch(url, {
         method: 'POST',
@@ -18,5 +18,7 @@ export async function postAction(url, data, callback) {
             alert('Something went wrong.');
         });
 
-    lang.style.color = 'var(--color-primary)';
+    if (loader !== null) {
+        loader.style.display = 'none';
+    }
 }

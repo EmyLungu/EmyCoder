@@ -144,7 +144,7 @@
 
 .output-label {
     margin: 0;
-    padding-bottom: 0.25em;
+    /* padding-bottom: 0.25em; */
     flex-grow: 1;
     align-content: center;
     color: var(--color-primary);
@@ -171,6 +171,19 @@
     font-size: 1em;
     word-wrap: break-word;
 }
+
+#output-status {
+    margin: auto 0 0 0;
+    font-weight: bold;
+}
+
+#output-status.success {
+    color: green;
+}
+#output-status.error {
+    color: red;
+}
+
 
 #img-code {
     cursor: pointer;

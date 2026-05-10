@@ -46,8 +46,9 @@ async def chat(payload: ChatIn):
     context = (
         f"Task: {payload.messages[-1]}\n\n"
         f"Source code:\n```\n{payload.snippet}\n```"
-        f"Execution log:\n{payload.output}\n"
     )
+    if payload.output != "":
+        context += f"Execution log:\n{payload.output}\n"
 
     conversation.append(HumanMessage(content=context))
 
