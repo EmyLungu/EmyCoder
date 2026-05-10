@@ -1,8 +1,9 @@
 fastapi[standard]==0.135.2
 easyocr==1.7.2
-llama_cpp_python==0.3.22
 scikit-learn==1.8.0
 mlflow-skinny==3.11.1
+langchain==1.2.18
+langchain-ollama==1.1.0
 docker==7.1.0
 pandas==3.0.1
 skops==0.14.0

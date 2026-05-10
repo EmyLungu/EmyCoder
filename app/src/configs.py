@@ -1,8 +1,10 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 
-from llama_cpp import Llama
+from langchain_ollama import ChatOllama
 
 import docker
 from pathlib import Path
@@ -42,11 +44,15 @@ client = docker.from_env()
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
-llm = Llama(
-    model_path="./app/src/qwen2.5-coder-1.5b-instruct-q4_k_m.gguf",
-    n_ctx=2048,
-    n_threads=4,
+llm = ChatOllama(
+    model="emycoder-qwen",
+    base_url=os.getenv("OLLAMA_BASE_URL"),
+    timeout=30,
+    num_predict=1024,
+    stop=["<|endoftext|>", "User:"]
 )
+
+MAX_CONVERSATION_MESSAGES = 10
 
 
 @asynccontextmanager
