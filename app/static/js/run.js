@@ -11,7 +11,7 @@ async function runCallback(response) {
     const result = await response.json();
 
     outputClassifier.innerHTML = "[." + result['language'] + "]";
-    output.innerHTML = result['output'].replaceAll("\\n", "\n");
+    output.innerHTML = result['output'];
 
     if (result['status'] === 'success') {
         outputStatus.innerHTML = 'Execution: Success';
