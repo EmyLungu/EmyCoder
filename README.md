@@ -1,11 +1,14 @@
-# EmyCoder: Language Prediction & Execution API
+# EmyCoder: A Secure, AI-Powered Playground for Code Learning
 
-EmyCoder is a high-performance FastAPI application that uses machine learning to identify the programming language of a code snippet and executes it within isolated environment.
+**EmyCoder** is a comprehensive **MLOps** platform built to provide a safe, **intelligent environment** for running and learning code. By combining custom-trained **machine learning** models with isolated execution environments, it offers a secure "**sandbox**" where users can experiment with code, receive **AI-driven guidance**, and explore the lifecycle of a production-grade ML system.
 
-#### Predictor:
-![Predictor preview Image](preview/predictor.png)
+The platform handles everything from the initial data scrape to secure script execution. It features a **language classifier** trained from **scratch** on a unique GitHub-sourced dataset, managed and versioned through a dedicated MLOps pipeline. To enhance the learning experience, **EmyCoder** integrates basic **computer vision** for **text extraction** and a fully local **AI chat assistant**, ensuring that your data and code never leave your infrastructure.
+
 #### Runner:
 ![Runner preview Image](preview/runner.png)
+
+#### Classifier:
+![Predictor preview Image](preview/classifier.png)
 
 ## 🚀 Key Features
 

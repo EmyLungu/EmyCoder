@@ -24,7 +24,6 @@ services:
       - ./mlflow_data:/mlflow_data
     command: >
       mlflow server 
-      -v /var/run/docker.sock:/var/run/docker.sock
       --backend-store-uri sqlite:////mlflow_data/mlflow.db 
       --default-artifact-root mlflow-artifacts:/
       --artifacts-destination /mlflow_data/artifacts 
