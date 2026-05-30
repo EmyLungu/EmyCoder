@@ -14,6 +14,9 @@ class PredictModelIn(BaseModel):
 class PredictModelOut(BaseModel):
     model_name: str
     language: str
+    is_confidence: bool
+    confidence: float
+    confidences: dict[str, float]
 
 
 class PredictAllIn(BaseModel):

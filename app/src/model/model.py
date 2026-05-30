@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+import numpy as np
 import mlflow
 from mlflow.tracking import MlflowClient
 
@@ -38,10 +39,37 @@ class ModelService:
             print(f"Could not resolve '@champion' alias: {e}")
             self.best_model = list(self.models.keys())[0]
 
-    def predict_pipeline(self, model_name: str, snippet: str) -> str:
+    def predict_pipeline(
+        self, model_name: str, snippet: str
+    ) -> tuple[str, float, dict[str, float]]:
         model = self.models[model_name]
 
-        return model.predict([snippet])[0]
+        prediction = model.predict([snippet])[0]
+
+        if hasattr(model, "predict_proba"):
+            probabilities = model.predict_proba([snippet])[0]
+            confidence = max(probabilities)
+            class_confidences = dict(zip(model.classes_, probabilities))
+            is_confidence = True
+
+        else:
+            decision_scores = model.decision_function([snippet])[0]
+
+            if isinstance(decision_scores, (int, float, np.float64)):
+                confidence = float(abs(decision_scores))
+                class_confidences = {"raw_decision_score": confidence}
+            else:
+                confidence = float(max(decision_scores))
+                class_confidences = dict(zip(model.classes_, decision_scores))
+
+            is_confidence = False
+
+        return (
+            prediction,
+            is_confidence,
+            float(confidence),
+            {str(k): float(v) for k, v in class_confidences.items()},
+        )
 
 
 model_service = ModelService()

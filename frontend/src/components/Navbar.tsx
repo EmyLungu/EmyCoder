@@ -145,7 +145,7 @@ const Navbar: React.FC = () => {
 
     return (
         <nav className={`${glassStyle} fixed z-50 rounded-xl my-2 left-2 right-2`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <Logo />
                     <DesktopMenu />

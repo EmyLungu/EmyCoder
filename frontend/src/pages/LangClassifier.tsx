@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLangClassifier } from '../hooks/useLangClassifier'
+import { useResizer } from '../hooks/useResizer';
 import type { LangResponse } from '../api/types';
 
 interface LangCardProps {
@@ -7,22 +8,56 @@ interface LangCardProps {
 }
 
 const LangCard: React.FC<LangCardProps> = ({ prediction }: LangCardProps) => {
-    const glassStyle = "bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl";
+    const glassStyle = `
+        bg-white/5
+        backdrop-blur-md
+        border border-white/10
+        rounded-2xl
+        p-4
+        flex flex-col gap-4
+        hover:bg-white/10
+        transition-all
+    `;
+
+    const [isOpen, setOpen] = useState(false);
 
     return (
-        <div className={`${glassStyle} p-4 flex flex-col gap-4`}>
+        <div className={`${glassStyle} `} onClick={() => { setOpen(!isOpen) }}>
             <p className="text-4xl font-semibold text-white">{prediction.language}</p>
             <p className="text-sm text-tsecondary">{prediction.model_name}</p>
+            <span className="flex flex-row mx-auto gap-1 border-t border-white/5 pt-2">
+                <p className="text-sm text-tsecondary">{prediction.is_confidence ? 'Confidence:' : 'Decision socres'}</p>
+                <p className="text-sm text-tprimary">
+                    {(prediction.confidence * 100).toFixed(2)}
+                    {prediction.is_confidence ? '%' : ''}
+                </p>
+            </span>
+            {isOpen && (
+                <ul className="text-left mx-auto">
+                    {Object.entries(prediction.confidences).map(([lang, confidence]) => (
+                        <li
+                            key={lang}
+                            className="flex flex-row justify-between border-b border-white/5 gap-4"
+                        >
+                            <span>{lang}:</span>
+                            <span>
+                                {(confidence * 100).toFixed(2)}
+                                {prediction.is_confidence ? '%' : ''}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     )
 };
 
 const LangClassifier: React.FC = () => {
     // Hooks
-    const { models, data, loading, error, getModels, triggerClassifier, triggerClassifierAll } = useLangClassifier();
+    const { models, data, loading, error, getModels, selectedModel, setSelectedModel, triggerClassifier, triggerClassifierAll } = useLangClassifier();
+    const { leftWidth, containerRef, startResize, handleResize, stopResize } = useResizer();
 
     // States
-    const [selectedModel, setSelectedModel] = useState<string>('');
     const [codeSnippet, setCodeSnippet] = useState<string>('');
 
     // Shared UI styling variables matching your global token schema
@@ -33,40 +68,13 @@ const LangClassifier: React.FC = () => {
         getModels();
     }, [getModels]);
 
-    useEffect(() => {
-        if (models.length > 0 && !selectedModel) {
-            setSelectedModel(models[0]);
-        }
-    }, [models, selectedModel]);
+    // useEffect(() => {
+    //     if (models.length > 0 && !selectedModel) {
+    //         setSelectedModel(models[0]);
+    //     }
+    // }, [models, selectedModel]);
 
     // Resizing
-    const [leftWidth, setLeftWidth] = useState<number>(75);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const isResizing = useRef<boolean>(false);
-
-    const handleResize = useCallback((e: MouseEvent) => {
-        if (!isResizing.current || !containerRef.current)
-            return;
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
-
-        if (newWidth >= 25 && newWidth <= 75) {
-            setLeftWidth(newWidth);
-        }
-    }, []);
-
-    const stopResize = useCallback(function removeListeners() {
-        isResizing.current = false;
-        document.removeEventListener('mousemove', handleResize);
-        document.removeEventListener('mouseup', removeListeners);
-    }, [handleResize]);
-
-    const startResize = (e: React.MouseEvent) => {
-        e.preventDefault();
-        isResizing.current = true;
-        document.addEventListener('mousemove', handleResize);
-        document.addEventListener('mouseup', stopResize);
-    };
 
     useEffect(() => {
         return () => {
@@ -77,7 +85,7 @@ const LangClassifier: React.FC = () => {
 
 
     const handleClassifier = async () => {
-        triggerClassifier(codeSnippet, selectedModel);
+        triggerClassifier(codeSnippet);
     };
 
     const handleClassifierAll = async () => {
@@ -93,7 +101,7 @@ const LangClassifier: React.FC = () => {
             {/* Split Workspace Window Wrapper */}
             <div
                 ref={containerRef}
-                className={`w-full mt-auto flex flex-col md:flex-row min-h-[700px] overflow-hidden ${glassStyle}`}
+                className={`w-full mt-auto flex flex-col md:flex-row min-h-[640px] overflow-hidden ${glassStyle}`}
             >
                 {/* LEFT: Input panel */}
                 <div

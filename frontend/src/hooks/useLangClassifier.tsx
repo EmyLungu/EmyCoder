@@ -4,6 +4,8 @@ import type { LangResponse } from '../api/types';
 
 export const useLangClassifier = () => {
     const [models, setModels] = useState<Array<string>>([]);
+    const [selectedModel, setSelectedModel] = useState<string>('');
+
     const [data, setData] = useState<Array<LangResponse> | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -12,6 +14,9 @@ export const useLangClassifier = () => {
         try {
             const result = await langService.getModels();
             setModels(result.models);
+            if (result.models.length > 0) {
+                setSelectedModel(result.models[0])
+            }
         } catch (err) {
             setError(err.message || 'Something went wrong');
         } finally {
@@ -19,7 +24,7 @@ export const useLangClassifier = () => {
         }
     }, []);
 
-    const triggerClassifier = useCallback(async (snippet: string, model: string) => {
+    const triggerClassifier = useCallback(async (snippet: string) => {
         if (!snippet.trim()) return;
 
         setLoading(true);
@@ -28,14 +33,14 @@ export const useLangClassifier = () => {
         try {
             setLoading(true);
             setError(null);
-            const result = await langService.classifyLanguage({ snippet, model });
+            const result = await langService.classifyLanguage({ snippet, "model": selectedModel });
             setData([result]);
         } catch (err) {
             setError(err.message || 'Something went wrong');
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [selectedModel]);
 
     const triggerClassifierAll = useCallback(async (snippet: string) => {
         if (!snippet.trim()) return;
@@ -53,5 +58,5 @@ export const useLangClassifier = () => {
         }
     }, []);
 
-    return { models, data, loading, error, getModels, triggerClassifier, triggerClassifierAll};
+    return { models, data, loading, error, selectedModel, setSelectedModel, getModels, triggerClassifier, triggerClassifierAll };
 };

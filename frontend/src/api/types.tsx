@@ -6,8 +6,10 @@ export interface LangRequest {
 export interface LangResponse {
     model_name: string;
     language: string;
-    // confidence: number;
-    // latencyMs: number;
+    is_confidence: boolean;
+    confidence: number;
+    confidences: Record<string, number>
+    latencyMs: number;
 }
 
 export interface LangAllRequest {

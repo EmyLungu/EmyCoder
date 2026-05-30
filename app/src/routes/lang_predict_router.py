@@ -33,16 +33,35 @@ def predict(payload: PredictModelIn, service=Depends(get_model_service)):
     if payload.model in service.models:
         model_name = payload.model
 
-    language = service.predict_pipeline(model_name, payload.snippet)
+    prediction, is_conf, confidence, confidences = service.predict_pipeline(
+        model_name, payload.snippet
+    )
 
-    return {"model_name": model_name, "language": language}
+    return {
+        "model_name": model_name,
+        "language": prediction,
+        "is_confidence": is_conf,
+        "confidence": confidence,
+        "confidences": confidences,
+    }
 
 
 @router.post("/lang/predict-all", response_model=PredictAllOut)
 def predict_all(payload: PredictAllIn, service=Depends(get_model_service)):
     results = []
     for model_name in service.models.keys():
-        language = service.predict_pipeline(model_name, payload.snippet)
-        results.append({"model_name": model_name, "language": language})
+        prediction, is_conf, confidence, confidences = (
+            service.predict_pipeline(model_name, payload.snippet)
+        )
+
+        results.append(
+            {
+                "model_name": model_name,
+                "language": prediction,
+                "is_confidence": is_conf,
+                "confidence": confidence,
+                "confidences": confidences,
+            }
+        )
 
     return {"predictions": results}
