@@ -8,17 +8,47 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     { label: 'Home', url: '/' },
-    { label: 'Classify', url: '/lang-predict' },
+    { label: 'Classify', url: '/lang-classifier' },
     { label: 'Run', url: '/run' },
 ];
 
+const contactItems: NavItem[] = [
+    { label: 'EmyLungu', url: 'https://github.com/EmyLungu' },
+];
+
+const glassStyle = "bg-white/5 backdrop-blur-lg border border-white/10";
+
 const Logo: React.FC = () => {
     return (
-        <div className="flex-shrink-0 flex items-center">
+        <div className="flex-shrink-0 flex items-center gap-2">
             <Link to="/" className="text-xl font-bold text-tbtn tracking-tight">
                 EmyCoder
             </Link>
+            <p className="text-xs">{` - v${__APP_VERSION__}`}</p>
         </div>
+    )
+}
+
+interface IconProps extends React.SVGProps<SVGSVGElement> {
+    item: NavItem;
+    itemStyle?: string;
+    icon: string;
+}
+
+const Icon: React.FC<IconProps> = ({ item, itemStyle, icon, ...svgProps }: IconProps) => {
+    return (
+        <a key={item.label} className="flex flex-row" href={item.url} target="_blank" rel="noopener noreferrer">
+            <svg
+                viewBox="0 0 32 32"
+                width="32"
+                height="32"
+                className="fill-current my-auto"
+                {...svgProps}
+            >
+                <use href={`/icons.svg#${icon}`} />
+            </svg>
+            <span className={itemStyle}>{item.label}</span>
+        </a>
     )
 }
 
@@ -42,6 +72,9 @@ const DesktopMenu: React.FC = () => {
                 >
                     {item.label}
                 </Link>
+            ))}
+            {contactItems.map((item) => (
+                <Icon key={item.label} item={item} itemStyle={itemStyle} icon="github-icon" />
             ))}
             <Link to="/" className="text-tbtn bg-secondary hover:text-primary hover:bg-btn border-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                 TBD
@@ -84,13 +117,13 @@ const MobileMenu: React.FC<OpenProps> = ({ isOpen }: OpenProps) => {
     return (
         <>
             {isOpen && (
-                <div className="md:hidden id=mobile-menu bg-primary">
+                <div className="md:hidden id=mobile-menu">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                         {navItems.map((item) => (
                             <Link
                                 key={item.label}
                                 to={item.url}
-                                className="block text-tprimary hover:bg-btn px-3 py-2 rounded-md text-base font-medium"
+                                className={`${glassStyle} hover:bg-btn/90 block text-tprimary px-3 py-2 rounded-md text-base font-medium`}
                             >
                                 {item.label}
                             </Link>
@@ -111,7 +144,7 @@ const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     return (
-        <nav className="bg-primary sticky top-0 z-50">
+        <nav className={`${glassStyle} fixed z-50 rounded-xl my-2 left-2 right-2`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <Logo />

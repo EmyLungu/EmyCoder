@@ -124,20 +124,3 @@ code {
     padding: 4px 8px;
     background: var(--code-bg);
 }
-
-
-.special-btn {
-    background-image: radial-gradient(rgba(12, 12, 12, 0.171) 2px, transparent 2px);
-    background-size: 30px 30px;
-    background-position: -5px -5px;
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    font-weight: bold;
-    transition: all 0.2s ease-out;
-    user-select: none;
-}
-
-.special-btn:hover {
-    background-color: var(--color-btn);
-    background-image: radial-gradient(rgba(12, 12, 12, 0.171) 2px, transparent 2px);
-}

@@ -24,6 +24,7 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - ./VERSION:/VERSION
       - /app/node_modules
     command: npm run dev
     depends_on:

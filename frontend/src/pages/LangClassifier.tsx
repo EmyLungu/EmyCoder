@@ -1,0 +1,225 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLangClassifier } from '../hooks/useLangClassifier'
+import type { LangResponse } from '../api/types';
+
+interface LangCardProps {
+    prediction: LangResponse
+}
+
+const LangCard: React.FC<LangCardProps> = ({ prediction }: LangCardProps) => {
+    const glassStyle = "bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl";
+
+    return (
+        <div className={`${glassStyle} p-4 flex flex-col gap-4`}>
+            <p className="text-4xl font-semibold text-white">{prediction.language}</p>
+            <p className="text-sm text-tsecondary">{prediction.model_name}</p>
+        </div>
+    )
+};
+
+const LangClassifier: React.FC = () => {
+    // Hooks
+    const { models, data, loading, error, getModels, triggerClassifier, triggerClassifierAll } = useLangClassifier();
+
+    // States
+    const [selectedModel, setSelectedModel] = useState<string>('');
+    const [codeSnippet, setCodeSnippet] = useState<string>('');
+
+    // Shared UI styling variables matching your global token schema
+    const glassStyle = "bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl";
+    const glassInputStyle = "bg-black/20 border border-white/10 focus:border-btn/50 focus:ring-1 focus:ring-btn/30 outline-none transition-all rounded-xl text-tprimary font-mono";
+
+    useEffect(() => {
+        getModels();
+    }, [getModels]);
+
+    useEffect(() => {
+        if (models.length > 0 && !selectedModel) {
+            setSelectedModel(models[0]);
+        }
+    }, [models, selectedModel]);
+
+    // Resizing
+    const [leftWidth, setLeftWidth] = useState<number>(75);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isResizing = useRef<boolean>(false);
+
+    const handleResize = useCallback((e: MouseEvent) => {
+        if (!isResizing.current || !containerRef.current)
+            return;
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+
+        if (newWidth >= 25 && newWidth <= 75) {
+            setLeftWidth(newWidth);
+        }
+    }, []);
+
+    const stopResize = useCallback(function removeListeners() {
+        isResizing.current = false;
+        document.removeEventListener('mousemove', handleResize);
+        document.removeEventListener('mouseup', removeListeners);
+    }, [handleResize]);
+
+    const startResize = (e: React.MouseEvent) => {
+        e.preventDefault();
+        isResizing.current = true;
+        document.addEventListener('mousemove', handleResize);
+        document.addEventListener('mouseup', stopResize);
+    };
+
+    useEffect(() => {
+        return () => {
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+        };
+    }, [handleResize, stopResize]);
+
+
+    const handleClassifier = async () => {
+        triggerClassifier(codeSnippet, selectedModel);
+    };
+
+    const handleClassifierAll = async () => {
+        triggerClassifierAll(codeSnippet);
+    };
+
+    return (
+        <div className="md:h-screen bg-ternary text-tprimary px-4 sm:px-8 py-8 pt-24 relative overflow-y-auto  md:overflow-hidden flex flex-col justify-center">
+            {/* Ambient Accent Lights */}
+            <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-btn/5 blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-purple-500/5 blur-[100px] pointer-events-none" />
+
+            {/* Split Workspace Window Wrapper */}
+            <div
+                ref={containerRef}
+                className={`w-full mt-auto flex flex-col md:flex-row min-h-[700px] overflow-hidden ${glassStyle}`}
+            >
+                {/* LEFT: Input panel */}
+                <div
+                    style={{ width: typeof window !== 'undefined' && window.innerWidth >= 768 ? `${leftWidth}%` : '100%' }}
+                    className="p-6 flex flex-col justify-between h-full min-w-[280px] md:border-r border-white/10"
+                >
+                    <div>
+                        {/* Input Control bar */}
+                        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/5 mb-4">
+                            <h2 className="text-xl font-bold tracking-tight text-white mb-0">Input</h2>
+
+                            <div className="flex items-center space-x-3 bg-black/20 px-3 py-1.5 rounded-xl border border-white/5">
+                                <label htmlFor="model-select" className="text-xs text-tsecondary font-medium whitespace-nowrap">
+                                    Select model:
+                                </label>
+                                {models.length > 0 ? (
+                                    <select
+                                        id="model-select"
+                                        value={selectedModel}
+                                        onChange={(e) => setSelectedModel(e.target.value)}
+                                        className="bg-transparent text-xs text-white border-none outline-none cursor-pointer font-semibold pr-2 focus:ring-0"
+                                    >
+                                        {models.map((model) => (
+                                            <option key={model} value={model} className="bg-secondary text-white">
+                                                {model}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <span className="text-xs text-red-400 font-bold">No models configured</span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Interactive Code Editor Area */}
+                        <textarea
+                            id="input-code"
+                            value={codeSnippet}
+                            onChange={(e) => setCodeSnippet(e.target.value)}
+                            placeholder="// Paste your snippet code..."
+                            className={`w-full h-80 p-4 text-sm resize-none ${glassInputStyle}`}
+                        />
+                    </div>
+
+                    {/* Left Actions Footer Panel */}
+                    <div className="flex items-center justify-between gap-4 mt-4 pt-4 border-t border-white/5">
+                        {/* Placeholder for your previous structural component: parts/extract-code.html */}
+                        <div className="text-xs text-tsecondary italic flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            Ready for execution
+                        </div>
+
+                        <div className="flex items-center space-x-3">
+                            <button
+                                onClick={() => handleClassifierAll()}
+                                className="px-4 py-2 text-xs font-semibold rounded-xl text-tsecondary hover:text-white hover:bg-white/5 border border-white/10 transition-all transform active:scale-95"
+                                type="button"
+                                disabled={loading || !codeSnippet.trim()}
+                            >
+                                Predict All
+                            </button>
+                            <button
+                                onClick={() => handleClassifier()}
+                                className="px-5 py-2 text-xs font-bold rounded-xl text-white bg-btn/90 hover:bg-btn/75 transition-all shadow-md shadow-btn/10 transform active:scale-95"
+                                type="button"
+                                disabled={loading || !codeSnippet.trim()}
+                            >
+                                Predict
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* DESKTOP RESIZER DRAG BAR */}
+                <div
+                    onMouseDown={startResize}
+                    className="hidden md:flex items-center justify-center w-2 cursor-col-resize hover:bg-btn/50 group transition-colors relative z-20 border-x border-white/5"
+                >
+                    <div className="w-[2px] h-10 bg-white/10 group-hover:bg-white/40 rounded transition-colors" />
+                </div>
+
+                {/* RIGHT: Output Evaluation Window */}
+                <div
+                    style={{ width: typeof window !== 'undefined' && window.innerWidth >= 768 ? `${100 - leftWidth}%` : '100%' }}
+                    className="w-full md:w-1/2 p-6 flex flex-col justify-between bg-black/10 min-h-[500px]"
+                >
+                    <div>
+                        <h2 className="text-xl font-bold tracking-tight text-white pb-4 border-b border-white/5 mb-6">
+                            Output
+                        </h2>
+
+                        <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar my-auto max-h-[420px]">
+                            {loading ? (
+                                <div className="relative w-12 h-12 m-auto">
+                                    <div className="w-12 h-12 rounded-full border-4 border-white/5 border-t-btn animate-spin" />
+                                </div>
+                            ) : error ? (
+                                <div className="text-red-400 font-medium px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl">
+                                    ⚠️ {error}
+                                </div>
+                            ) : data ? (
+                                <div
+                                    className={`font-extrabold tracking-tight transition-all duration-200 text-transparent bg-clip-text bg-gradient-to-r from-btn to-orange-100 flex flex-col gap-4 overflow-scroll`}
+                                >
+                                    {data.map((prediction) => (
+                                        <LangCard key={prediction.model_name} prediction={prediction} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <h1
+                                    className={`text-3xl sm:text-5xl font-extrabold tracking-tight transition-all duration-200 text-tsecondary/30`}
+                                >
+                                    Lang
+                                </h1>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Operational system confirmation tag metadata */}
+                    <div className="text-[10px] font-mono text-tsecondary/40 text-right uppercase tracking-wider">
+                        Inference Active Context • Engine Ready
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default LangClassifier;

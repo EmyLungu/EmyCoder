@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import fs from 'fs';
+import path from 'path';
+
+const version = fs.readFileSync(path.resolve(__dirname, '../VERSION'), 'utf-8').trim();
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,6 +12,9 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    define: {
+        __APP_VERSION__: JSON.stringify(version),
+    },
     server: {
         host: true,
         port: 5173,
