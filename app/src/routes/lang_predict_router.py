@@ -3,6 +3,7 @@ from fastapi import APIRouter, Request, Depends
 from app.src.configs import templates, VERSION, get_model_service
 
 from app.src.data_types import (
+    ModelListOut,
     PredictModelIn,
     PredictModelOut,
     PredictAllIn,
@@ -12,7 +13,7 @@ from app.src.data_types import (
 router = APIRouter()
 
 
-@router.get("/lang-predict")
+@router.get("/lang/lang-predict")
 def lang_model(request: Request, service=Depends(get_model_service)):
     return templates.TemplateResponse(
         request,
@@ -21,18 +22,23 @@ def lang_model(request: Request, service=Depends(get_model_service)):
     )
 
 
-@router.post("/predict", response_model=PredictModelOut)
+@router.get("/lang/models", response_model=ModelListOut)
+def get_models(service=Depends(get_model_service)):
+    return {"models": service.models.keys()}
+
+
+@router.post("/lang/predict", response_model=PredictModelOut)
 def predict(payload: PredictModelIn, service=Depends(get_model_service)):
     model_name = service.best_model
-    if payload.selected_model in service.models:
-        model_name = payload.selected_model
+    if payload.model in service.models:
+        model_name = payload.model
 
     language = service.predict_pipeline(model_name, payload.snippet)
 
-    return {"language": language}
+    return {"model_name": model_name, "language": language}
 
 
-@router.post("/predict-all", response_model=PredictAllOut)
+@router.post("/lang/predict-all", response_model=PredictAllOut)
 def predict_all(payload: PredictAllIn, service=Depends(get_model_service)):
     results = []
     for model_name in service.models.keys():

@@ -2,12 +2,17 @@ from pydantic import BaseModel
 from typing import List
 
 
+class ModelListOut(BaseModel):
+    models: list[str]
+
+
 class PredictModelIn(BaseModel):
     snippet: str
-    selected_model: str
+    model: str
 
 
 class PredictModelOut(BaseModel):
+    model_name: str
     language: str
 
 
@@ -15,13 +20,8 @@ class PredictAllIn(BaseModel):
     snippet: str
 
 
-class PredictionItem(BaseModel):
-    model_name: str
-    language: str
-
-
 class PredictAllOut(BaseModel):
-    predictions: list[PredictionItem]
+    predictions: list[PredictModelOut]
 
 
 class RunIn(BaseModel):
