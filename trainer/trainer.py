@@ -62,7 +62,7 @@ class Trainer:
         )
 
         self.model = SGDClassifier(
-            loss="hinge",
+            loss=self.params["loss"],
             penalty="l2",
             eta0=0.01,
             learning_rate="adaptive",

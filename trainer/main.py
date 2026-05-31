@@ -20,6 +20,7 @@ if __name__ == "__main__":
         "seed": 42,
         "classes": np.array(["py", "c", "cpp", "js"], dtype=str),
         "hash_features": 2**20,
+        "loss": "log_loss"
     }
 
     mlflow.set_tracking_uri(os.getenv("MLFLOW_URI"))
