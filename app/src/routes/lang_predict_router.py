@@ -10,10 +10,10 @@ from app.src.data_types import (
     PredictAllOut,
 )
 
-router = APIRouter()
+router = APIRouter(prefix="/lang", tags=["Language Classifier"])
 
 
-@router.get("/lang/lang-predict")
+@router.get("/lang-predict-page")
 def lang_model(request: Request, service=Depends(get_model_service)):
     return templates.TemplateResponse(
         request,
@@ -22,12 +22,12 @@ def lang_model(request: Request, service=Depends(get_model_service)):
     )
 
 
-@router.get("/lang/models", response_model=ModelListOut)
+@router.get("/models", response_model=ModelListOut)
 def get_models(service=Depends(get_model_service)):
     return {"models": service.models.keys()}
 
 
-@router.post("/lang/predict", response_model=PredictModelOut)
+@router.post("/predict", response_model=PredictModelOut)
 def predict(payload: PredictModelIn, service=Depends(get_model_service)):
     model_name = service.best_model
     if payload.model in service.models:
@@ -46,7 +46,7 @@ def predict(payload: PredictModelIn, service=Depends(get_model_service)):
     }
 
 
-@router.post("/lang/predict-all", response_model=PredictAllOut)
+@router.post("/predict-all", response_model=PredictAllOut)
 def predict_all(payload: PredictAllIn, service=Depends(get_model_service)):
     results = []
     for model_name in service.models.keys():

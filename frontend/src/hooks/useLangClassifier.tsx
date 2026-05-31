@@ -14,6 +14,7 @@ export const useLangClassifier = () => {
         try {
             const result = await langService.getModels();
             setModels(result.models);
+
             if (result.models.length > 0) {
                 setSelectedModel(result.models[0])
             }
@@ -33,6 +34,7 @@ export const useLangClassifier = () => {
         try {
             setLoading(true);
             setError(null);
+
             const result = await langService.classifyLanguage({ snippet, "model": selectedModel });
             setData([result]);
         } catch (err) {

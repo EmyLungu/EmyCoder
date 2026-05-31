@@ -34,6 +34,7 @@ class RunIn(BaseModel):
 class RunOut(BaseModel):
     output: str
     language: str
+    model: str
     status: str
 
 

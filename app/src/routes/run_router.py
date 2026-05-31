@@ -9,10 +9,10 @@ from app.src.configs import templates, VERSION, client
 
 from app.src.data_types import RunIn, RunOut
 
-router = APIRouter()
+router = APIRouter(prefix="/run", tags=["Code snippet running"])
 
 
-@router.get("/run")
+@router.get("/run-page")
 def run_page(request: Request):
     return templates.TemplateResponse(
         request,
@@ -23,8 +23,8 @@ def run_page(request: Request):
 
 @router.post("/run-snippet", response_model=RunOut)
 def run_snippet(payload: RunIn, service=Depends(get_model_service)):
-    lang = service.predict_pipeline(service.best_model, payload.snippet)
-    lang_output = f"{lang} - {service.best_model.strip(".joblib")}"
+    lang = service.predict_pipeline(service.best_model, payload.snippet)[0]
+    model = service.best_model.strip(".joblib")
 
     conf = CONFIGS.get(lang)
 
@@ -65,20 +65,27 @@ def run_snippet(payload: RunIn, service=Depends(get_model_service)):
 
         if len(output) > MAX_OUTPUT_SIZE:
             output = output[:MAX_OUTPUT_SIZE] + "\n[Output truncated...]"
-        return {"output": output, "language": lang_output, "status": "success"}
+        return {
+            "output": output,
+            "language": lang,
+            "model": model,
+            "status": "success",
+        }
 
     except ContainerError as e:
         error_output = e.stderr.decode("utf-8")
         return {
             "output": error_output if error_output else "Execution timed out!",
-            "language": lang_output,
-            "status": "error"
+            "language": lang,
+            "model": model,
+            "status": "error",
         }
 
     except Exception as e:
         print(f"[RUN SNIPPET - SYSTEM ERORR]: {e}")
         return {
             "output": "Execution failed!",
-            "language": lang_output,
+            "language": lang,
+            "model": model,
             "status": "system_failure",
         }

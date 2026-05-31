@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
-export const useResizer = () => {
-    const [leftWidth, setLeftWidth] = useState<number>(75);
+export const useResizer = (maxLimit: number) => {
+    const [leftWidth, setLeftWidth] = useState<number>(maxLimit);
     const containerRef = useRef<HTMLDivElement>(null);
     const isResizing = useRef<boolean>(false);
 
@@ -11,10 +11,10 @@ export const useResizer = () => {
         const containerRect = containerRef.current.getBoundingClientRect();
         const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
 
-        if (newWidth >= 25 && newWidth <= 75) {
+        if (newWidth >= 25 && newWidth <= maxLimit) {
             setLeftWidth(newWidth);
         }
-    }, []);
+    }, [maxLimit]);
 
     const stopResize = useCallback(function removeListeners() {
         isResizing.current = false;

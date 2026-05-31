@@ -1,3 +1,7 @@
+export interface ModelListResponse {
+    models: string[];
+}
+
 export interface LangRequest {
     snippet: string;
     model: string;
@@ -17,13 +21,16 @@ export interface LangAllRequest {
 }
 
 export interface LangAllResponse {
-    predictions: Array<LangResponse>;
+    predictions: LangResponse[];
 }
 
-// export interface LangAllResponse {
-//     predictions: Array<LangResponse>;
-// }
+export interface RunRequest {
+    snippet: string;
+}
 
-export interface ModelListResponse {
-    models: string[];
+export interface RunResponse {
+    output: string;
+    language: string;
+    model: string;
+    status: string;
 }

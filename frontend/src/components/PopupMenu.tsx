@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import type { PopupButton } from "./PopupButton";
+import type { ButtonType } from "./ButtonType";
 
 interface PopupMenuProps {
-    buttons: PopupButton[];
+    buttons: ButtonType[];
 }
 
 const PopupMenu: React.FC<PopupMenuProps> = ({ buttons }: PopupMenuProps) => {
@@ -33,7 +33,6 @@ const PopupMenu: React.FC<PopupMenuProps> = ({ buttons }: PopupMenuProps) => {
                 </svg>
             </button>
 
-            {/* Meniul Popup propriu-zis */}
             {isOpen && (
                 <div className={`origin-top-right absolute right-0 mt-1 w-48 rounded-md shadow-lg divide-y divide-gray-100 focus:outline-none z-50 transition-all duration-200 ${glassStyle}`}>
                     <div className="py-1">

@@ -4,11 +4,7 @@ import PopupMenu from './PopupMenu';
 import React, { useState } from 'react';
 import type { File } from './File'
 import { DEFAULT_FILE } from './File'
-import type { PopupButton } from './PopupButton';
-
-interface CodeEditorProps {
-    setCode: (value: string | undefined) => void;
-}
+import type { ButtonType } from './ButtonType';
 
 interface FileTabProps {
     file: File;
@@ -16,11 +12,20 @@ interface FileTabProps {
     changeFile: (file: File) => void;
 }
 
-const ExtToLang: Record<string, string> ={
+const ExtToLang: Record<string, string> = {
     "py": "python",
-    "j=": "javascript",
-    "cp": "cpp",
+    "js": "javascript",
+    "cpp": "cpp",
     "c": "c",
+}
+
+const getLang = (name: string) => {
+    let ext: string = "python";
+    const idx = name.lastIndexOf('.');
+    if (idx !== -1)
+        ext = name.slice(idx + 1);
+
+    return ExtToLang[ext] || 'python'
 }
 
 const FileTab: React.FC<FileTabProps> = ({ file, isActive, changeFile }: FileTabProps) => {
@@ -45,9 +50,14 @@ const FileTab: React.FC<FileTabProps> = ({ file, isActive, changeFile }: FileTab
     )
 }
 
+interface CodeEditorProps {
+    setCode: (value: string | undefined) => void;
+    useFileControl: boolean;
+}
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
     setCode,
+    useFileControl,
 }: CodeEditorProps) => {
 
     const [files, setFiles] = useState<File[]>([
@@ -81,15 +91,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
             return;
         }
 
-        let ext: string = "python";
-        const idx = name.lastIndexOf('.');
-        if (idx !== -1)
-            ext = name.slice(idx + 1);
+        const lang = getLang(name);
 
         const newFile: File = {
             name: name,
             code: '# New file created\n',
-            language: ExtToLang[ext] || 'python'
+            language: lang
         };
 
         setFiles((prevFiles) => [...prevFiles, newFile]);
@@ -102,19 +109,23 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         const newName = prompt("Enter new file name:", currentFile.name);
         if (!newName || newName === currentFile.name) return;
 
+        const lang = getLang(newName);
+
         setFiles((prevFiles) =>
-            prevFiles.map((f) => (f.name === currentFile.name ? { ...f, name: newName } : f))
+            prevFiles.map((f) => (f.name === currentFile.name ? { ...f, name: newName, language: lang } : f))
         );
-        setCurrentFile((prev) => ({ ...prev, name: newName }));
+        setCurrentFile((prev) => ({ ...prev, name: newName, language: lang }));
     };
 
     const handleDeleteFile = () => {
+        if (files.length === 1) return;
+
         setFiles(f => f.filter(item => item.name !== currentFile.name));
         setCurrentFile((prev) => ({ ...prev, code: '' }));
         setCode("");
     };
 
-    const popupButtons: PopupButton[] = [
+    const popupButtons: ButtonType[] = [
         { name: 'New File', callback: handleNewFile },
         { name: 'Rename File', callback: handleRenameFile },
         { name: 'Delete File', callback: handleDeleteFile },
@@ -129,11 +140,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
                     <div className="w-3 h-3 rounded-full bg-green-500/70" />
                 </div>
                 <div className="mr-auto flex flex-row gap-1 mx-8 h-full overflow-x-auto">
-                    {files.map((file) => (
+                    {useFileControl && files.map((file) => (
                         <FileTab key={file.name} file={file} changeFile={changeFile} isActive={file.name === currentFile.name} />
                     ))}
                 </div>
-                <PopupMenu buttons={popupButtons} />
+                {useFileControl && <PopupMenu buttons={popupButtons} />}
             </div>
 
             <Editor
