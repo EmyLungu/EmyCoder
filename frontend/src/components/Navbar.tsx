@@ -38,13 +38,7 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
 const Icon: React.FC<IconProps> = ({ item, itemStyle, icon, ...svgProps }: IconProps) => {
     return (
         <a key={item.label} className="flex flex-row" href={item.url} target="_blank" rel="noopener noreferrer">
-            <svg
-                viewBox="0 0 32 32"
-                width="32"
-                height="32"
-                className="fill-current my-auto"
-                {...svgProps}
-            >
+            <svg className="w-8 h-8 fill-current my-auto" {...svgProps} >
                 <use href={`/icons.svg#${icon}`} />
             </svg>
             <span className={itemStyle}>{item.label}</span>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLangClassifier } from '../hooks/useLangClassifier'
 import { useResizer } from '../hooks/useResizer';
 import type { LangResponse } from '../api/types';
+import { DEFAULT_FILE } from '../components/File';
+import CodeEditor from '../components/Editor';
 
 interface LangCardProps {
     prediction: LangResponse
@@ -58,24 +60,16 @@ const LangClassifier: React.FC = () => {
     const { leftWidth, containerRef, startResize, handleResize, stopResize } = useResizer();
 
     // States
-    const [codeSnippet, setCodeSnippet] = useState<string>('');
+    const [codeSnippet, setCodeSnippet] = useState<string>(DEFAULT_FILE.code);
 
     // Shared UI styling variables matching your global token schema
     const glassStyle = "bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl";
-    const glassInputStyle = "bg-black/20 border border-white/10 focus:border-btn/50 focus:ring-1 focus:ring-btn/30 outline-none transition-all rounded-xl text-tprimary font-mono";
 
     useEffect(() => {
         getModels();
     }, [getModels]);
 
-    // useEffect(() => {
-    //     if (models.length > 0 && !selectedModel) {
-    //         setSelectedModel(models[0]);
-    //     }
-    // }, [models, selectedModel]);
-
     // Resizing
-
     useEffect(() => {
         return () => {
             document.removeEventListener('mousemove', handleResize);
@@ -93,7 +87,7 @@ const LangClassifier: React.FC = () => {
     };
 
     return (
-        <div className="md:h-screen bg-ternary text-tprimary px-4 sm:px-8 py-8 pt-24 relative overflow-y-auto  md:overflow-hidden flex flex-col justify-center">
+        <div className="md:h-screen bg-ternary text-tprimary px-4 sm:px-8 py-8 pt-24 relative overflow-y-auto  md:overflow-hidden overflow-x-hidden flex flex-col justify-center">
             {/* Ambient Accent Lights */}
             <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-btn/5 blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-purple-500/5 blur-[100px] pointer-events-none" />
@@ -101,16 +95,16 @@ const LangClassifier: React.FC = () => {
             {/* Split Workspace Window Wrapper */}
             <div
                 ref={containerRef}
-                className={`w-full mt-auto flex flex-col md:flex-row min-h-[640px] overflow-hidden ${glassStyle}`}
+                className={`w-full flex-1 flex flex-col md:flex-row overflow-hidden ${glassStyle}`}
             >
                 {/* LEFT: Input panel */}
                 <div
                     style={{ width: typeof window !== 'undefined' && window.innerWidth >= 768 ? `${leftWidth}%` : '100%' }}
-                    className="p-6 flex flex-col justify-between h-full min-w-[280px] md:border-r border-white/10"
+                    className="p-6 flex-1 min-h-0 flex flex-col justify-between h-full min-w-[280px] md:border-r border-white/10"
                 >
-                    <div>
+                    <div className="flex flex-col flex-1 min-h-0">
                         {/* Input Control bar */}
-                        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/5 mb-4">
+                        <div className="flex flex-wrap items-center justify-between gap-4 pb-1 border-b border-white/5 mb-2">
                             <h2 className="text-xl font-bold tracking-tight text-white mb-0">Input</h2>
 
                             <div className="flex items-center space-x-3 bg-black/20 px-3 py-1.5 rounded-xl border border-white/5">
@@ -122,7 +116,7 @@ const LangClassifier: React.FC = () => {
                                         id="model-select"
                                         value={selectedModel}
                                         onChange={(e) => setSelectedModel(e.target.value)}
-                                        className="bg-transparent text-xs text-white border-none outline-none cursor-pointer font-semibold pr-2 focus:ring-0"
+                                        className="bg-transparent text-xs text-white border-none outline-none cursor-pointer font-semibold rounded-lg p-1 focus:ring-0 hover:bg-btn/12 transition-all"
                                     >
                                         {models.map((model) => (
                                             <option key={model} value={model} className="bg-secondary text-white">
@@ -136,14 +130,9 @@ const LangClassifier: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Interactive Code Editor Area */}
-                        <textarea
-                            id="input-code"
-                            value={codeSnippet}
-                            onChange={(e) => setCodeSnippet(e.target.value)}
-                            placeholder="// Paste your snippet code..."
-                            className={`w-full h-80 p-4 text-sm resize-none ${glassInputStyle}`}
-                        />
+                        <div className="w-full h-128 md:flex-1 md:h-full md:min-h-0 overflow-x-hidden">
+                            <CodeEditor setCode={(val: string) => setCodeSnippet(val || '')} />
+                        </div>
                     </div>
 
                     {/* Left Actions Footer Panel */}
@@ -186,14 +175,14 @@ const LangClassifier: React.FC = () => {
                 {/* RIGHT: Output Evaluation Window */}
                 <div
                     style={{ width: typeof window !== 'undefined' && window.innerWidth >= 768 ? `${100 - leftWidth}%` : '100%' }}
-                    className="w-full md:w-1/2 p-6 flex flex-col justify-between bg-black/10 min-h-[500px]"
+                    className="w-full md:w-1/2 p-6 flex flex-col justify-between bg-black/10 h-full"
                 >
                     <div>
                         <h2 className="text-xl font-bold tracking-tight text-white pb-4 border-b border-white/5 mb-6">
                             Output
                         </h2>
 
-                        <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar my-auto max-h-[420px]">
+                        <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar my-auto max-h-100">
                             {loading ? (
                                 <div className="relative w-12 h-12 m-auto">
                                     <div className="w-12 h-12 rounded-full border-4 border-white/5 border-t-btn animate-spin" />
@@ -222,7 +211,7 @@ const LangClassifier: React.FC = () => {
 
                     {/* Operational system confirmation tag metadata */}
                     <div className="text-[10px] font-mono text-tsecondary/40 text-right uppercase tracking-wider">
-                        Inference Active Context • Engine Ready
+                        • Engine Ready
                     </div>
                 </div>
             </div>
