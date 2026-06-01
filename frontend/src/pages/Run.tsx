@@ -23,15 +23,17 @@ const OutputContent: React.FC<OutputContentProps> = ({ data }: OutputContentProp
         );
     }
 
+    const headerItemStyle = "px-2.5 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10"
+
     const isSuccess = data.status?.toLowerCase() === 'success';
 
     return (
         <div className="w-full flex flex-col gap-4 text-left font-normal tracking-normal text-white normal-case">
             <div className="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
-                <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10 text-white/80">
+                <span className={`${headerItemStyle} text-tprimary`}>
                     {data.language}
                 </span>
-                <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10 text-tsecondary">
+                <span className={`${headerItemStyle} text-tsecondary`}>
                     {data.model}
                 </span>
                 <span className={`ml-auto px-2.5 py-1 text-xs font-semibold rounded-full border ${isSuccess
@@ -39,6 +41,9 @@ const OutputContent: React.FC<OutputContentProps> = ({ data }: OutputContentProp
                     : 'bg-red-500/10 border-red-500/30 text-red-400'
                     }`}>
                     {data.status.toUpperCase()}
+                </span>
+                <span className={`${headerItemStyle} text-[10px] text-tsecondary`}>
+                    Latency: {data.latency.toFixed(0)}ms
                 </span>
             </div>
 
@@ -50,6 +55,7 @@ const OutputContent: React.FC<OutputContentProps> = ({ data }: OutputContentProp
                 <pre className="p-4 overflow-x-auto whitespace-pre-wrap break-all text-gray-200 selection:bg-white/20 leading-relaxed min-h-[150px]">
                     {data.output || <span className="text-tsecondary/30 italic">Process finished with no output.</span>}
                 </pre>
+
             </div>
         </div>
     );

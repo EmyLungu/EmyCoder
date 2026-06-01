@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -41,7 +42,9 @@ class ModelService:
 
     def predict_pipeline(
         self, model_name: str, snippet: str
-    ) -> tuple[str, float, dict[str, float]]:
+    ) -> tuple[str, float, dict[str, float], float]:
+        start_time = time.perf_counter()
+
         model = self.models[model_name]
 
         prediction = model.predict([snippet])[0]
@@ -64,11 +67,14 @@ class ModelService:
 
             is_confidence = False
 
+        latency = (time.perf_counter() - start_time) * 1000
+
         return (
             prediction,
             is_confidence,
             float(confidence),
             {str(k): float(v) for k, v in class_confidences.items()},
+            latency
         )
 
 

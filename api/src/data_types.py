@@ -17,6 +17,7 @@ class PredictModelOut(BaseModel):
     is_confidence: bool
     confidence: float
     confidences: dict[str, float]
+    latency: float
 
 
 class PredictAllIn(BaseModel):
@@ -36,6 +37,7 @@ class RunOut(BaseModel):
     language: str
     model: str
     status: str
+    latency: float
 
 
 class CodeExtractorOut(BaseModel):

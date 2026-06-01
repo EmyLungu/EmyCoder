@@ -13,7 +13,7 @@ export interface LangResponse {
     is_confidence: boolean;
     confidence: number;
     confidences: Record<string, number>
-    latencyMs: number;
+    latency: number;
 }
 
 export interface LangAllRequest {
@@ -33,6 +33,7 @@ export interface RunResponse {
     language: string;
     model: string;
     status: string;
+    latency: number;
 }
 
 export interface ChatRequest {

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 import os
+import time
 import tempfile
 from docker.errors import ContainerError
 
@@ -14,10 +15,15 @@ router = APIRouter(prefix="/run", tags=["Code snippet running"])
 
 @router.post("/run-snippet", response_model=RunOut)
 def run_snippet(payload: RunIn, service=Depends(get_model_service)):
+    start_time = time.perf_counter()
+
     lang = service.predict_pipeline(service.best_model, payload.snippet)[0]
     model = service.best_model.strip(".joblib")
 
     conf = CONFIGS.get(lang)
+
+    output = ""
+    status = "error"
 
     try:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -52,31 +58,31 @@ def run_snippet(payload: RunIn, service=Depends(get_model_service)):
                 # runtime="runsc"
             )
 
-            output = result.decode("utf-8")
+            container_output = result.decode("utf-8")
 
         if len(output) > MAX_OUTPUT_SIZE:
             output = output[:MAX_OUTPUT_SIZE] + "\n[Output truncated...]"
+
+        output = container_output
+        status = "success"
+
+    except ContainerError as e:
+        error_output = e.stderr.decode("utf-8")
+        output = error_output if error_output else "Execution timed out!"
+        status = "error"
+
+    except Exception as e:
+        print(f"[RUN SNIPPET - SYSTEM ERORR]: {e}")
+        output = "Execution failed!"
+        status = "system_failure"
+
+    finally:
+        latency = (time.perf_counter() - start_time) * 1000
+
         return {
             "output": output,
             "language": lang,
             "model": model,
-            "status": "success",
-        }
-
-    except ContainerError as e:
-        error_output = e.stderr.decode("utf-8")
-        return {
-            "output": error_output if error_output else "Execution timed out!",
-            "language": lang,
-            "model": model,
-            "status": "error",
-        }
-
-    except Exception as e:
-        print(f"[RUN SNIPPET - SYSTEM ERORR]: {e}")
-        return {
-            "output": "Execution failed!",
-            "language": lang,
-            "model": model,
-            "status": "system_failure",
+            "status": status,
+            "latency": latency,
         }

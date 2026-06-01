@@ -24,8 +24,8 @@ def predict(payload: PredictModelIn, service=Depends(get_model_service)):
     if payload.model in service.models:
         model_name = payload.model
 
-    prediction, is_conf, confidence, confidences = service.predict_pipeline(
-        model_name, payload.snippet
+    prediction, is_conf, confidence, confidences, latency = (
+        service.predict_pipeline(model_name, payload.snippet)
     )
 
     return {
@@ -34,6 +34,7 @@ def predict(payload: PredictModelIn, service=Depends(get_model_service)):
         "is_confidence": is_conf,
         "confidence": confidence,
         "confidences": confidences,
+        "latency": latency,
     }
 
 
@@ -41,7 +42,7 @@ def predict(payload: PredictModelIn, service=Depends(get_model_service)):
 def predict_all(payload: PredictAllIn, service=Depends(get_model_service)):
     results = []
     for model_name in service.models.keys():
-        prediction, is_conf, confidence, confidences = (
+        prediction, is_conf, confidence, confidences, latency = (
             service.predict_pipeline(model_name, payload.snippet)
         )
 
@@ -52,6 +53,7 @@ def predict_all(payload: PredictAllIn, service=Depends(get_model_service)):
                 "is_confidence": is_conf,
                 "confidence": confidence,
                 "confidences": confidences,
+                "latency": latency,
             }
         )
 

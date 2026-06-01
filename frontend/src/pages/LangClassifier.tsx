@@ -67,20 +67,25 @@ const LangCard: React.FC<LangCardProps> = ({ prediction }: LangCardProps) => {
                 </p>
             </span>
             {isOpen && (
-                <ul className="text-left mx-auto">
-                    {Object.entries(prediction.confidences).map(([lang, confidence]) => (
-                        <li
-                            key={lang}
-                            className="flex flex-row justify-between border-b border-white/5 gap-4"
-                        >
-                            <span>{lang}:</span>
-                            <span>
-                                {(confidence * 100).toFixed(2)}
-                                {prediction.is_confidence ? '%' : ''}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+                <>
+                    <ul className="text-left mx-auto">
+                        {Object.entries(prediction.confidences).map(([lang, confidence]) => (
+                            <li
+                                key={lang}
+                                className="flex flex-row justify-between border-b border-white/5 gap-4"
+                            >
+                                <span>{lang}:</span>
+                                <span>
+                                    {(confidence * 100).toFixed(2)}
+                                    {prediction.is_confidence ? '%' : ''}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="text-sm text-tsecondary">
+                        Latency: {prediction.latency.toFixed(0)}ms
+                    </p>
+                </>
             )}
         </div>
     )
