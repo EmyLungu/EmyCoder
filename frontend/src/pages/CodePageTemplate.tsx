@@ -96,7 +96,7 @@ const CodePageTemplate: React.FC<CodePageTemplateProps> = ({
                             Output
                         </h2>
 
-                        <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar my-auto max-h-100">
+                        <div className="flex-grow overflow-y-auto pr-2 my-auto max-h-100">
                             {loading ? (
                                 <div className="relative w-12 h-12 m-auto">
                                     <div className="w-12 h-12 rounded-full border-4 border-white/5 border-t-btn animate-spin" />
@@ -116,7 +116,7 @@ const CodePageTemplate: React.FC<CodePageTemplateProps> = ({
                     </div>
 
                     {/* Operational system confirmation tag metadata */}
-                    <div className="text-[10px] font-mono text-tsecondary/40 text-right uppercase tracking-wider">
+                    <div className="text-[10px] font-mono text-tsecondary/40 text-left uppercase tracking-wider">
                         • Engine Ready
                     </div>
                 </div>

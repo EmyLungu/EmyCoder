@@ -2,6 +2,7 @@ import CodePageTemplate from './CodePageTemplate';
 import { DEFAULT_FILE } from '../components/File';
 import type { ButtonType } from '../components/ButtonType';
 import CodeActions from '../components/CodeActions';
+import ChatOverlay from '../components/Chat';
 import { useCodeRunner } from '../hooks/useRun';
 import { useState } from 'react';
 import type { RunResponse } from '../api/types';
@@ -68,20 +69,26 @@ const Run: React.FC = () => {
     ];
 
     return (
-        <CodePageTemplate
-            setCodeSnippet={setCodeSnippet}
-            loading={loading}
-            error={error}
-            OutputContent={<OutputContent data={data} />}
-            useFileControl={true}
-            resizerMaxLimit={65}
-            actions={
-                <CodeActions
-                    disabled={loading || !codeSnippet.trim()}
-                    buttons={codeButtons}
-                />
-            }
-        />
+        <>
+            <CodePageTemplate
+                setCodeSnippet={setCodeSnippet}
+                loading={loading}
+                error={error}
+                OutputContent={<OutputContent data={data} />}
+                useFileControl={true}
+                resizerMaxLimit={65}
+                actions={
+                    <CodeActions
+                        disabled={loading || !codeSnippet.trim()}
+                        buttons={codeButtons}
+                    />
+                }
+            />
+            <ChatOverlay
+                currentCode={codeSnippet}
+                currentOutput={data?.output || ""}
+            />
+        </>
     );
 };
 

@@ -6,12 +6,11 @@ from app.src.configs import llm, MAX_CONVERSATION_MESSAGES
 
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 
-router = APIRouter()
+router = APIRouter(prefix="/assistant", tags=["Chat Assistant"])
 
 
 @router.post("/chat")
 async def chat(payload: ChatIn):
-
     system_msg = SystemMessage(
         content=(
             "You are a Senior Systems Architect and Technical Instructor. "

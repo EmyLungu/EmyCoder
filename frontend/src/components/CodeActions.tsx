@@ -14,6 +14,7 @@ const CodeActions: React.FC<ActionProps> = ({ disabled, buttons }: ActionProps) 
         <div className="flex items-center gap-3">
             {buttons.map(button => (
                 <button
+                    key={button.name}
                     onClick={button.callback}
                     className={`${both} ` + (button.important ? importantStype : nonImportantStype)}
                     type="button"

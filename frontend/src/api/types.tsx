@@ -34,3 +34,9 @@ export interface RunResponse {
     model: string;
     status: string;
 }
+
+export interface ChatRequest {
+    messages: string[];
+    snippet: string;
+    output: string;
+}
