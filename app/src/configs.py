@@ -1,7 +1,6 @@
 import os
 
 from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 
 from langchain_ollama import ChatOllama
@@ -11,7 +10,6 @@ from pathlib import Path
 
 from app.src.model.model import model_service
 
-VERSION = "0.1.9"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MAX_OUTPUT_SIZE = 5000
@@ -40,8 +38,6 @@ CONFIGS = {
 CONFIGS["c"] = CONFIGS["cpp"]
 
 client = docker.from_env()
-
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
 llm = ChatOllama(

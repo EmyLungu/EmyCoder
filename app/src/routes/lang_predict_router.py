@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Depends
 
-from app.src.configs import templates, VERSION, get_model_service
+from app.src.configs import get_model_service
 
 from app.src.data_types import (
     ModelListOut,
@@ -11,15 +11,6 @@ from app.src.data_types import (
 )
 
 router = APIRouter(prefix="/lang", tags=["Language Classifier"])
-
-
-@router.get("/lang-predict-page")
-def lang_model(request: Request, service=Depends(get_model_service)):
-    return templates.TemplateResponse(
-        request,
-        "lang-predict.html",
-        {"version": VERSION, "models": service.models.keys()},
-    )
 
 
 @router.get("/models", response_model=ModelListOut)

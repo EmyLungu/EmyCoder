@@ -1,24 +1,15 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Depends
 
 import os
 import tempfile
 from docker.errors import ContainerError
 
 from app.src.configs import CONFIGS, MAX_OUTPUT_SIZE, get_model_service
-from app.src.configs import templates, VERSION, client
+from app.src.configs import client
 
 from app.src.data_types import RunIn, RunOut
 
 router = APIRouter(prefix="/run", tags=["Code snippet running"])
-
-
-@router.get("/run-page")
-def run_page(request: Request):
-    return templates.TemplateResponse(
-        request,
-        "run.html",
-        {"version": VERSION},
-    )
 
 
 @router.post("/run-snippet", response_model=RunOut)
