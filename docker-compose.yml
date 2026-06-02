@@ -62,4 +62,7 @@ services:
   # tunnel:
   #   image: cloudflare/cloudflared:latest
   #   container_name: "emycoder-tunnel"
-  #   command: tunnel --url http://api:80
+  #   command: tunnel --url http://frontend:5173
+  #   depends_on:
+  #     - frontend
+  #     - api
