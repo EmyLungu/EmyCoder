@@ -4,6 +4,11 @@
 
 The platform handles everything from the initial data scrape to secure script execution. It features a **language classifier** trained from **scratch** on a unique GitHub-sourced dataset, managed and versioned through a dedicated MLOps pipeline. To enhance the learning experience, **EmyCoder** integrates basic **computer vision** for **text extraction** and a fully local **AI chat assistant**, ensuring that your data and code never leave your infrastructure.
 
+#### Project Structure:
+![Structure](preview/diagram.png)
+
+## Preview:
+
 #### Runner:
 ![Runner preview Image](preview/runner.png)
 
