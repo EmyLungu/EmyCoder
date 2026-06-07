@@ -1,27 +1,34 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-from configs import lifespan
+from classifier.models.classifier import lang_classifier_model
 from core.config_loader import settings
 
-from routes.lang_predict_router import router as lang_predict_router
-from routes.run_router import router as run_router
-from routes.code_extractor_router import (
-    router as code_extractor_router,
-)
-from routes.chat import router as chat_router
 from user.routes.user_router import router as user_router
 from auth.routes.auth_router import router as auth_router
+from classifier.routes.classifier_router import router as classifier_router
+from runner.routes.runner_router import router as runner_router
+from assistant.routes.assistant_router import router as assistant_router
+from extractor.routes.extractor_router import router as extractor_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    lang_classifier_model.load_models()
+
+    yield
+
 
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth_router)
 app.include_router(user_router)
 
-app.include_router(lang_predict_router)
-app.include_router(run_router)
-app.include_router(code_extractor_router)
-app.include_router(chat_router)
+app.include_router(classifier_router)
+app.include_router(runner_router)
+app.include_router(assistant_router)
+app.include_router(extractor_router)
 
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(

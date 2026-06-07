@@ -1,24 +1,19 @@
-import os
 import time
-from pathlib import Path
-from dotenv import load_dotenv
 
 import numpy as np
 import mlflow
 from mlflow.tracking import MlflowClient
 
-MODEL_DIR = Path(__file__).resolve(strict=True).parent
-
-load_dotenv()
+from core.config_loader import settings
 
 
-class ModelService:
+class LangClassifier:
     def __init__(self) -> None:
         self.models = {}
         self.best_model = None
 
     def load_models(self) -> None:
-        client = MlflowClient(os.getenv("MLFLOW_TRACKING_URI"))
+        client = MlflowClient(settings.MLFLOW_TRACKING_URI)
         model_name = "Language-Classifier-SGDC"
         versions = client.search_model_versions(f"name='{model_name}'")
 
@@ -74,8 +69,8 @@ class ModelService:
             is_confidence,
             float(confidence),
             {str(k): float(v) for k, v in class_confidences.items()},
-            latency
+            latency,
         )
 
 
-model_service = ModelService()
+lang_classifier_model = LangClassifier()

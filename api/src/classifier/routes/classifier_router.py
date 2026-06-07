@@ -1,25 +1,24 @@
 from fastapi import APIRouter, Depends
 
-from configs import get_model_service
-
-from data_types import (
-    ModelListOut,
-    PredictModelIn,
-    PredictModelOut,
-    PredictAllIn,
-    PredictAllOut,
+from classifier.services.classifier_service import get_lang_classifier
+from classifier.schemas.classifier import (
+    ModelList,
+    ClassifyIn,
+    ClassifyOut,
+    ClassifyAllIn,
+    ClassifyAllOut,
 )
 
 router = APIRouter(prefix="/lang", tags=["Language Classifier"])
 
 
-@router.get("/models", response_model=ModelListOut)
-def get_models(service=Depends(get_model_service)):
+@router.get("/models", response_model=ModelList)
+def get_models(service=Depends(get_lang_classifier)):
     return {"models": service.models.keys()}
 
 
-@router.post("/predict", response_model=PredictModelOut)
-def predict(payload: PredictModelIn, service=Depends(get_model_service)):
+@router.post("/predict", response_model=ClassifyOut)
+def predict(payload: ClassifyIn, service=Depends(get_lang_classifier)):
     model_name = service.best_model
     if payload.model in service.models:
         model_name = payload.model
@@ -38,8 +37,8 @@ def predict(payload: PredictModelIn, service=Depends(get_model_service)):
     }
 
 
-@router.post("/predict-all", response_model=PredictAllOut)
-def predict_all(payload: PredictAllIn, service=Depends(get_model_service)):
+@router.post("/predict-all", response_model=ClassifyAllOut)
+def predict_all(payload: ClassifyAllIn, service=Depends(get_lang_classifier)):
     results = []
     for model_name in service.models.keys():
         prediction, is_conf, confidence, confidences, latency = (

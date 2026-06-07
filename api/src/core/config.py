@@ -57,3 +57,6 @@ class Settings(BaseSettings):
             port=self.POSTGRESQL_PORT,
             path=self.POSTGRESQL_DATABASE,
         )
+
+    MLFLOW_TRACKING_URI: str
+    OLLAMA_BASE_URL: str

@@ -1,16 +1,11 @@
-from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
-
-from data_types import ChatIn
-from configs import llm, MAX_CONVERSATION_MESSAGES
-
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 
-router = APIRouter(prefix="/assistant", tags=["Chat Assistant"])
+from core.llm import MAX_CONVERSATION_MESSAGES
 
 
-@router.post("/chat")
-async def chat(payload: ChatIn):
+def get_conversation(
+    messages: list[str], snippet: str, output: str
+) -> list[str]:
     system_msg = SystemMessage(
         content=(
             "You are a Senior Systems Architect and Technical Instructor. "
@@ -29,7 +24,7 @@ async def chat(payload: ChatIn):
         )
     )
 
-    history_messages = payload.messages[:-1]
+    history_messages = messages[:-1]
     if len(history_messages) % 2 != 0:
         history_messages = history_messages[1:]
     history_messages = history_messages[-MAX_CONVERSATION_MESSAGES:]
@@ -42,17 +37,10 @@ async def chat(payload: ChatIn):
         else:
             conversation.append(AIMessage(content=message))
 
-    context = (
-        f"Task: {payload.messages[-1]}\n\n"
-        f"Source code:\n```\n{payload.snippet}\n```"
-    )
-    if payload.output != "":
-        context += f"Execution log:\n{payload.output}\n"
+    context = f"Task: {messages[-1]}\n\n" f"Source code:\n```\n{snippet}\n```"
+    if output != "":
+        context += f"Execution log:\n{output}\n"
 
     conversation.append(HumanMessage(content=context))
 
-    async def generate_stream():
-        async for chunck in llm.astream(conversation):
-            yield chunck.content
-
-    return StreamingResponse(generate_stream(), media_type="text/plain")
+    return conversation
