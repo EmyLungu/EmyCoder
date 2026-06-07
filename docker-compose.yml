@@ -2,8 +2,8 @@ services:
   api:
     container_name: emycoder-api
     build:
-      context: ./api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./api/Dockerfile
     ports:
       - "80:80"
     environment:
