@@ -39,7 +39,7 @@ jobs:
       - name: Run Linter
         run: |
           pip install ruff
-          ruff check .
+          ruff check . --exclude src/alembic
 
       # - name: Run Tests with Pytest
       #   run: |

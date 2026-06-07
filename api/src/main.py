@@ -1,5 +1,8 @@
 from fastapi import FastAPI
-from .configs import lifespan
+from starlette.middleware.cors import CORSMiddleware
+
+from configs import lifespan
+from core.config_loader import settings
 
 from routes.lang_predict_router import router as lang_predict_router
 from routes.run_router import router as run_router
@@ -19,6 +22,17 @@ app.include_router(lang_predict_router)
 app.include_router(run_router)
 app.include_router(code_extractor_router)
 app.include_router(chat_router)
+
+if settings.BACKEND_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 @app.middleware("http")
