@@ -1,10 +1,15 @@
 fastapi[standard]==0.135.2
 easyocr==1.7.2
-scikit-learn==1.8.0
 mlflow-skinny==3.11.1
+scikit-learn==1.8.0
 langchain==1.2.18
 langchain-ollama==1.1.0
 docker==7.1.0
+alembic==1.18.4
+sqlalchemy==2.0.50
+psycopg2-binary==2.9.12
+pyjwt==2.13.0
+bcrypt==5.0.0
 pandas==3.0.1
 skops==0.14.0
 pydantic==2.12.5

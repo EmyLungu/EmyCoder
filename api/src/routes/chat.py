@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
-from app.src.data_types import ChatIn
-from app.src.configs import llm, MAX_CONVERSATION_MESSAGES
+from data_types import ChatIn
+from configs import llm, MAX_CONVERSATION_MESSAGES
 
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 

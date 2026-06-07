@@ -8,7 +8,7 @@ from langchain_ollama import ChatOllama
 import docker
 from pathlib import Path
 
-from app.src.model.model import model_service
+from model.model import model_service
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

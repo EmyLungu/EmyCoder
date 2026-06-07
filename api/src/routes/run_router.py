@@ -5,10 +5,10 @@ import time
 import tempfile
 from docker.errors import ContainerError
 
-from app.src.configs import CONFIGS, MAX_OUTPUT_SIZE, get_model_service
-from app.src.configs import client
+from configs import CONFIGS, MAX_OUTPUT_SIZE, get_model_service
+from configs import client
 
-from app.src.data_types import RunIn, RunOut
+from data_types import RunIn, RunOut
 
 router = APIRouter(prefix="/run", tags=["Code snippet running"])
 

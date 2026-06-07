@@ -9,6 +9,8 @@ services:
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
       - OLLAMA_BASE_URL=http://ollama:11434
+    env_file:
+      - .env
     volumes:
       - ./api:/code/app
       - /var/run/docker.sock:/var/run/docker.sock
@@ -16,6 +18,19 @@ services:
     depends_on:
       - mlflow
       - ollama
+      - db
+  
+  db:
+    image: postgres:18.4-alpine
+    container_name: emycoder-db
+    ports:
+      - ${POSTGRESQL_PORT}:5432
+    volumes:
+      - emycoder-api-db-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=${POSTGRESQL_DATABASE}
+      - POSTGRES_USER=${POSTGRESQL_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
 
   frontend:
     container_name: emycoder-frontend
@@ -66,3 +81,6 @@ services:
   #   depends_on:
   #     - frontend
   #     - api
+
+volumes:
+  emycoder-api-db-data:

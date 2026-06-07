@@ -7,9 +7,9 @@ COPY ./api/requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
-
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
+ENV PYTHONPATH=/code/app/src
 
 CMD ["fastapi", "dev", "app/src/main.py", "--host", "0.0.0.0", "--port", "80"]
 

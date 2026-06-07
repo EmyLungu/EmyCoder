@@ -4,8 +4,8 @@ from fastapi import APIRouter, UploadFile, File
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-from app.src.data_types import CodeExtractorOut
-from app.src.configs import llm
+from data_types import CodeExtractorOut
+from configs import llm
 
 router = APIRouter()
 

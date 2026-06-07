@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from app.src.configs import get_model_service
+from configs import get_model_service
 
-from app.src.data_types import (
+from data_types import (
     ModelListOut,
     PredictModelIn,
     PredictModelOut,

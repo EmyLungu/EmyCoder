@@ -1,14 +1,19 @@
 from fastapi import FastAPI
-from app.src.configs import lifespan
+from .configs import lifespan
 
-from app.src.routes.lang_predict_router import router as lang_predict_router
-from app.src.routes.run_router import router as run_router
-from app.src.routes.code_extractor_router import (
+from routes.lang_predict_router import router as lang_predict_router
+from routes.run_router import router as run_router
+from routes.code_extractor_router import (
     router as code_extractor_router,
 )
-from app.src.routes.chat import router as chat_router
+from routes.chat import router as chat_router
+from user.routes.user_router import router as user_router
+from auth.routes.auth_router import router as auth_router
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(auth_router)
+app.include_router(user_router)
 
 app.include_router(lang_predict_router)
 app.include_router(run_router)
